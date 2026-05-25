@@ -9,6 +9,8 @@ import {
   Library,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Separator } from "@/components/ui/separator";
 
 const navItems = [
   { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard },
@@ -22,11 +24,12 @@ export function Sidebar() {
 
   return (
     <aside className="hidden md:flex md:w-60 md:flex-col md:border-r bg-muted/40">
-      <div className="flex h-14 items-center border-b px-4">
+      <div className="flex h-14 items-center justify-between border-b px-4">
         <Link href="/dashboard" className="flex items-center gap-2 font-bold">
           <CheckSquare className="h-5 w-5" />
           <span>TaskHub</span>
         </Link>
+        <ThemeToggle />
       </div>
       <nav className="flex-1 space-y-1 p-3">
         {navItems.map((item) => {

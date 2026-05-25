@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -55,6 +56,7 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
       } else {
         await createTask(data);
       }
+      toast.success(isEditing ? "タスクを更新しました" : "タスクを作成しました");
       onOpenChange(false);
     });
   };

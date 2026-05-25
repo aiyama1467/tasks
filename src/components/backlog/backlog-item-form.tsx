@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -79,6 +80,7 @@ export function BacklogItemForm({
           url: (formData.get("url") as string) || undefined,
         });
       }
+      toast.success(isEditing ? "アイテムを更新しました" : "アイテムを追加しました");
       onOpenChange(false);
     });
   };

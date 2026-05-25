@@ -14,6 +14,7 @@ import {
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { deleteProject } from "@/app/projects/actions";
 import { useTransition } from "react";
+import { toast } from "sonner";
 import type { ProjectData } from "./project-form";
 
 const COLOR_MAP: Record<string, string> = {
@@ -41,8 +42,9 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
       : 0;
 
   const handleDelete = () => {
-    startTransition(() => {
-      deleteProject(project.id);
+    startTransition(async () => {
+      await deleteProject(project.id);
+      toast.success("プロジェクトを削除しました");
     });
   };
 

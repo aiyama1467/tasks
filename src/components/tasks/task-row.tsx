@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -47,8 +48,9 @@ export function TaskRowComponent({ task, onEdit }: TaskRowProps) {
   };
 
   const handleDelete = () => {
-    startTransition(() => {
-      deleteTask(task.id);
+    startTransition(async () => {
+      await deleteTask(task.id);
+      toast.success("タスクを削除しました");
     });
   };
 

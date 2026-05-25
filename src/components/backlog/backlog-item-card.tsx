@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -44,8 +45,9 @@ export function BacklogItemCard({ item, onEdit }: BacklogItemCardProps) {
   };
 
   const handleDelete = () => {
-    startTransition(() => {
-      deleteBacklogItem(item.id);
+    startTransition(async () => {
+      await deleteBacklogItem(item.id);
+      toast.success("アイテムを削除しました");
     });
   };
 

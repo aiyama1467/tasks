@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import "./globals.css";
@@ -29,14 +30,17 @@ export default function RootLayout({
     <html
       lang="ja"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="flex h-full">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
-          {children}
-        </main>
-        <MobileNav />
-        <Toaster />
+        <ThemeProvider>
+          <Sidebar />
+          <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
+            {children}
+          </main>
+          <MobileNav />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

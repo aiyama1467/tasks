@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -64,6 +65,7 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
       } else {
         await createProject(data);
       }
+      toast.success(isEditing ? "プロジェクトを更新しました" : "プロジェクトを作成しました");
       onOpenChange(false);
     });
   };
