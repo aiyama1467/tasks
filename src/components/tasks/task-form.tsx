@@ -95,7 +95,7 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
               <label htmlFor="status" className="text-sm font-medium">
                 ステータス
               </label>
-              <Select name="status" defaultValue={task?.status ?? "todo"}>
+              <Select name="status" defaultValue={task?.status ?? "todo"} items={TASK_STATUS}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -113,7 +113,11 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
               <label htmlFor="priority" className="text-sm font-medium">
                 優先度
               </label>
-              <Select name="priority" defaultValue={task?.priority ?? "medium"}>
+              <Select
+                name="priority"
+                defaultValue={task?.priority ?? "medium"}
+                items={TASK_PRIORITY}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -140,7 +144,14 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
               <label htmlFor="projectId" className="text-sm font-medium">
                 プロジェクト
               </label>
-              <Select name="projectId" defaultValue={task?.projectId ?? "none"}>
+              <Select
+                name="projectId"
+                defaultValue={task?.projectId ?? "none"}
+                items={[
+                  { value: "none", label: "なし" },
+                  ...projects.map((p) => ({ value: p.id, label: p.name })),
+                ]}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

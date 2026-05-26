@@ -103,7 +103,11 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
               <label htmlFor="status" className="text-sm font-medium">
                 ステータス
               </label>
-              <Select name="status" defaultValue={project?.status ?? "active"}>
+              <Select
+                name="status"
+                defaultValue={project?.status ?? "active"}
+                items={PROJECT_STATUS}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -123,7 +127,18 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
               </label>
               <Select name="color" defaultValue={project?.color ?? "blue"}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue>
+                    {(value: string | null) => {
+                      const color = PROJECT_COLORS.find((c) => c.value === value);
+                      if (!color) return null;
+                      return (
+                        <span className="flex items-center gap-2">
+                          <span className={`inline-block h-3 w-3 rounded-full ${color.class}`} />
+                          {color.label}
+                        </span>
+                      );
+                    }}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {PROJECT_COLORS.map((c) => (

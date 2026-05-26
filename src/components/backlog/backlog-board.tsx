@@ -69,7 +69,11 @@ export function BacklogBoard({ categories, items, activeCategory }: BacklogBoard
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Select value={statusFilter} onValueChange={handleStatusFilter}>
+          <Select
+            value={statusFilter}
+            onValueChange={handleStatusFilter}
+            items={{ all: "すべて", ...BACKLOG_STATUS }}
+          >
             <SelectTrigger className="w-32">
               <SelectValue placeholder="ステータス" />
             </SelectTrigger>

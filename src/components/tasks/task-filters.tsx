@@ -29,7 +29,11 @@ export function TaskFilters() {
 
   return (
     <div className="flex gap-3">
-      <Select value={currentStatus} onValueChange={(v) => updateFilter("status", v)}>
+      <Select
+        value={currentStatus}
+        onValueChange={(v) => updateFilter("status", v)}
+        items={{ all: "すべて", ...TASK_STATUS }}
+      >
         <SelectTrigger className="w-32">
           <SelectValue placeholder="ステータス" />
         </SelectTrigger>
@@ -43,7 +47,11 @@ export function TaskFilters() {
         </SelectContent>
       </Select>
 
-      <Select value={currentPriority} onValueChange={(v) => updateFilter("priority", v)}>
+      <Select
+        value={currentPriority}
+        onValueChange={(v) => updateFilter("priority", v)}
+        items={{ all: "すべて", ...TASK_PRIORITY }}
+      >
         <SelectTrigger className="w-32">
           <SelectValue placeholder="優先度" />
         </SelectTrigger>

@@ -118,6 +118,7 @@ export function BacklogItemForm({
               <Select
                 name="categoryId"
                 defaultValue={item?.categoryId ?? defaultCategoryId ?? categories[0]?.id}
+                items={categories.map((c) => ({ value: c.id, label: c.name }))}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -136,7 +137,11 @@ export function BacklogItemForm({
               <label htmlFor="status" className="text-sm font-medium">
                 ステータス
               </label>
-              <Select name="status" defaultValue={item?.status ?? "not_started"}>
+              <Select
+                name="status"
+                defaultValue={item?.status ?? "not_started"}
+                items={BACKLOG_STATUS}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -156,7 +161,11 @@ export function BacklogItemForm({
               <label htmlFor="priority" className="text-sm font-medium">
                 優先度
               </label>
-              <Select name="priority" defaultValue={item?.priority ?? "medium"}>
+              <Select
+                name="priority"
+                defaultValue={item?.priority ?? "medium"}
+                items={BACKLOG_PRIORITY}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
