@@ -37,13 +37,14 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
+    const rawProjectId = formData.get("projectId") as string;
     const data = {
       title: formData.get("title") as string,
       description: (formData.get("description") as string) || undefined,
       status: formData.get("status") as string,
       priority: formData.get("priority") as string,
       dueDate: (formData.get("dueDate") as string) || undefined,
-      projectId: (formData.get("projectId") as string) || undefined,
+      projectId: rawProjectId && rawProjectId !== "none" ? rawProjectId : undefined,
     };
 
     startTransition(async () => {
