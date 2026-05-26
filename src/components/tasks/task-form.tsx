@@ -2,15 +2,10 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { createTask, updateTask } from "@/app/tasks/actions";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -18,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TASK_STATUS, TASK_PRIORITY } from "@/lib/constants";
-import { createTask, updateTask } from "@/app/tasks/actions";
+import { Textarea } from "@/components/ui/textarea";
+import { TASK_PRIORITY, TASK_STATUS } from "@/lib/constants";
 import type { TaskRow } from "./task-row";
 
 interface TaskFormProps {
@@ -66,9 +61,7 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? "タスクを編集" : "新規タスク"}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "タスクを編集" : "新規タスク"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -140,22 +133,14 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
               <label htmlFor="dueDate" className="text-sm font-medium">
                 期限
               </label>
-              <Input
-                id="dueDate"
-                name="dueDate"
-                type="date"
-                defaultValue={task?.dueDate ?? ""}
-              />
+              <Input id="dueDate" name="dueDate" type="date" defaultValue={task?.dueDate ?? ""} />
             </div>
 
             <div className="space-y-2">
               <label htmlFor="projectId" className="text-sm font-medium">
                 プロジェクト
               </label>
-              <Select
-                name="projectId"
-                defaultValue={task?.projectId ?? "none"}
-              >
+              <Select name="projectId" defaultValue={task?.projectId ?? "none"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -172,11 +157,7 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               キャンセル
             </Button>
             <Button type="submit" disabled={isPending}>

@@ -1,10 +1,10 @@
-import { db } from "@/db";
-import { tasks, projects, backlogItems, categories } from "@/db/schema";
-import { eq, and, ne, lt, lte, gte, count, sql } from "drizzle-orm";
-import { StatsOverview } from "@/components/dashboard/stats-overview";
-import { TodayTasks } from "@/components/dashboard/today-tasks";
+import { and, count, eq, gte, lt, ne } from "drizzle-orm";
 import { ActiveProjects } from "@/components/dashboard/active-projects";
 import { InProgressBacklog } from "@/components/dashboard/in-progress-backlog";
+import { StatsOverview } from "@/components/dashboard/stats-overview";
+import { TodayTasks } from "@/components/dashboard/today-tasks";
+import { db } from "@/db";
+import { backlogItems, projects, tasks } from "@/db/schema";
 
 export default async function DashboardPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -37,21 +37,13 @@ export default async function DashboardPage() {
     }),
 
     // Open tasks count
-    db
-      .select({ value: count() })
-      .from(tasks)
-      .where(ne(tasks.status, "done")),
+    db.select({ value: count() }).from(tasks).where(ne(tasks.status, "done")),
 
     // Completed this week
     db
       .select({ value: count() })
       .from(tasks)
-      .where(
-        and(
-          eq(tasks.status, "done"),
-          gte(tasks.updatedAt, new Date(weekStart))
-        )
-      ),
+      .where(and(eq(tasks.status, "done"), gte(tasks.updatedAt, new Date(weekStart)))),
 
     // Active projects with stats (top 5)
     db.query.projects.findMany({
@@ -85,9 +77,7 @@ export default async function DashboardPage() {
       const [doneCountResult] = await db
         .select({ value: count() })
         .from(tasks)
-        .where(
-          and(eq(tasks.projectId, project.id), eq(tasks.status, "done"))
-        );
+        .where(and(eq(tasks.projectId, project.id), eq(tasks.status, "done")));
 
       return {
         id: project.id,
@@ -96,10 +86,10 @@ export default async function DashboardPage() {
         taskCount: taskCountResult.value,
         doneCount: doneCountResult.value,
       };
-    })
+    }),
   );
 
-  const mapTask = (t: typeof todayTaskList[number]) => ({
+  const mapTask = (t: (typeof todayTaskList)[number]) => ({
     id: t.id,
     title: t.title,
     status: t.status,

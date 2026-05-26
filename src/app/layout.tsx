@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Sidebar } from "@/components/layout/sidebar";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { Sidebar } from "@/components/layout/sidebar";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,9 +35,7 @@ export default function RootLayout({
       <body className="flex h-full">
         <ThemeProvider>
           <Sidebar />
-          <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
-            {children}
-          </main>
+          <main className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</main>
           <MobileNav />
           <Toaster />
         </ThemeProvider>

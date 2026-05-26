@@ -1,10 +1,10 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { TaskForm } from "./task-form";
 import { TaskFilters } from "./task-filters";
+import { TaskForm } from "./task-form";
 
 interface TaskPageHeaderProps {
   projects: { id: string; name: string }[];
@@ -25,11 +25,7 @@ export function TaskPageHeader({ projects }: TaskPageHeaderProps) {
           新規タスク
         </Button>
       </div>
-      <TaskForm
-        open={showForm}
-        onOpenChange={setShowForm}
-        projects={projects}
-      />
+      <TaskForm open={showForm} onOpenChange={setShowForm} projects={projects} />
     </div>
   );
 }

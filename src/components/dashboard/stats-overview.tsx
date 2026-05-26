@@ -1,5 +1,5 @@
+import { AlertTriangle, CheckSquare, FolderKanban, Library } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckSquare, FolderKanban, Library, AlertTriangle } from "lucide-react";
 
 interface StatsOverviewProps {
   openTasks: number;
@@ -52,13 +52,9 @@ export function StatsOverview({
             <stat.icon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${stat.className ?? ""}`}>
-              {stat.value}
-            </div>
+            <div className={`text-2xl font-bold ${stat.className ?? ""}`}>{stat.value}</div>
             {stat.description && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                {stat.description}
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{stat.description}</p>
             )}
           </CardContent>
         </Card>

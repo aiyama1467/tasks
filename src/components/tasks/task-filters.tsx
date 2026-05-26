@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TASK_STATUS, TASK_PRIORITY } from "@/lib/constants";
+import { TASK_PRIORITY, TASK_STATUS } from "@/lib/constants";
 
 export function TaskFilters() {
   const router = useRouter();
@@ -29,10 +29,7 @@ export function TaskFilters() {
 
   return (
     <div className="flex gap-3">
-      <Select
-        value={currentStatus}
-        onValueChange={(v) => updateFilter("status", v)}
-      >
+      <Select value={currentStatus} onValueChange={(v) => updateFilter("status", v)}>
         <SelectTrigger className="w-32">
           <SelectValue placeholder="ステータス" />
         </SelectTrigger>
@@ -46,10 +43,7 @@ export function TaskFilters() {
         </SelectContent>
       </Select>
 
-      <Select
-        value={currentPriority}
-        onValueChange={(v) => updateFilter("priority", v)}
-      >
+      <Select value={currentPriority} onValueChange={(v) => updateFilter("priority", v)}>
         <SelectTrigger className="w-32">
           <SelectValue placeholder="優先度" />
         </SelectTrigger>

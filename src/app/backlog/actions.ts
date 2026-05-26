@@ -1,9 +1,9 @@
 "use server";
 
-import { db } from "@/db";
-import { backlogItems } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { db } from "@/db";
+import { backlogItems } from "@/db/schema";
 
 export async function createBacklogItem(data: {
   title: string;
@@ -40,7 +40,7 @@ export async function updateBacklogItem(
     priority?: string;
     rating?: number | null;
     url?: string | null;
-  }
+  },
 ) {
   const existing = await db.query.backlogItems.findFirst({
     where: eq(backlogItems.id, id),

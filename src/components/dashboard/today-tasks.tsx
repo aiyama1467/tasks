@@ -1,12 +1,12 @@
 "use client";
 
-import { useTransition } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { TASK_PRIORITY_COLOR, TASK_PRIORITY } from "@/lib/constants";
-import { updateTaskStatus } from "@/app/tasks/actions";
-import { CheckSquare, Square, AlertTriangle } from "lucide-react";
+import { AlertTriangle, CheckSquare, Square } from "lucide-react";
 import Link from "next/link";
+import { useTransition } from "react";
+import { updateTaskStatus } from "@/app/tasks/actions";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TASK_PRIORITY, TASK_PRIORITY_COLOR } from "@/lib/constants";
 
 interface Task {
   id: string;
@@ -36,22 +36,18 @@ function TaskItem({ task }: { task: Task }) {
     <div
       className={`flex items-center gap-3 rounded-md px-3 py-2 hover:bg-muted/50 ${isPending ? "opacity-50" : ""}`}
     >
-      <button onClick={toggleDone} className="shrink-0">
+      <button type="button" onClick={toggleDone} className="shrink-0">
         {isDone ? (
           <CheckSquare className="h-4 w-4 text-green-600" />
         ) : (
           <Square className="h-4 w-4 text-muted-foreground" />
         )}
       </button>
-      <span
-        className={`flex-1 text-sm ${isDone ? "text-muted-foreground line-through" : ""}`}
-      >
+      <span className={`flex-1 text-sm ${isDone ? "text-muted-foreground line-through" : ""}`}>
         {task.title}
       </span>
       {task.projectName && (
-        <span className="text-xs text-muted-foreground">
-          {task.projectName}
-        </span>
+        <span className="text-xs text-muted-foreground">{task.projectName}</span>
       )}
       <Badge variant="outline" className={`text-xs ${TASK_PRIORITY_COLOR[task.priority]}`}>
         {TASK_PRIORITY[task.priority as keyof typeof TASK_PRIORITY]}
@@ -65,10 +61,7 @@ export function TodayTasks({ todayTasks, overdueTasks }: TodayTasksProps) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="text-base">今日のタスク</CardTitle>
-        <Link
-          href="/tasks"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
+        <Link href="/tasks" className="text-sm text-muted-foreground hover:text-foreground">
           すべて表示
         </Link>
       </CardHeader>
@@ -87,9 +80,7 @@ export function TodayTasks({ todayTasks, overdueTasks }: TodayTasksProps) {
         {todayTasks.length > 0 ? (
           todayTasks.map((task) => <TaskItem key={task.id} task={task} />)
         ) : overdueTasks.length === 0 ? (
-          <p className="py-4 text-center text-sm text-muted-foreground">
-            今日のタスクはありません
-          </p>
+          <p className="py-4 text-center text-sm text-muted-foreground">今日のタスクはありません</p>
         ) : null}
       </CardContent>
     </Card>

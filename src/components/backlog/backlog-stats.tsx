@@ -9,8 +9,7 @@ interface CategoryStats {
 export function BacklogStats({ stats }: { stats: CategoryStats[] }) {
   const totalItems = stats.reduce((sum, s) => sum + s.total, 0);
   const totalCompleted = stats.reduce((sum, s) => sum + s.completed, 0);
-  const overallProgress =
-    totalItems > 0 ? Math.round((totalCompleted / totalItems) * 100) : 0;
+  const overallProgress = totalItems > 0 ? Math.round((totalCompleted / totalItems) * 100) : 0;
 
   return (
     <div className="rounded-lg border p-4 space-y-3">
@@ -26,12 +25,11 @@ export function BacklogStats({ stats }: { stats: CategoryStats[] }) {
         {stats
           .filter((s) => s.total > 0)
           .map((s) => {
-            const pct =
-              s.total > 0 ? Math.round((s.completed / s.total) * 100) : 0;
+            const pct = s.total > 0 ? Math.round((s.completed / s.total) * 100) : 0;
             return (
               <div key={s.name} className="text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">{s.name}</span>{" "}
-                {s.completed}/{s.total} ({pct}%)
+                <span className="font-medium text-foreground">{s.name}</span> {s.completed}/
+                {s.total} ({pct}%)
               </div>
             );
           })}

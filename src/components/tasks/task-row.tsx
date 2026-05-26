@@ -1,7 +1,15 @@
 "use client";
 
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { deleteTask, updateTaskStatus } from "@/app/tasks/actions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -9,17 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { TaskPriorityBadge } from "./task-priority-badge";
 import { TASK_STATUS } from "@/lib/constants";
-import { updateTaskStatus, deleteTask } from "@/app/tasks/actions";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { TaskPriorityBadge } from "./task-priority-badge";
 
 export type TaskRow = {
   id: string;
@@ -73,9 +73,7 @@ export function TaskRowComponent({ task, onEdit }: TaskRowProps) {
         <div>
           <span>{task.title}</span>
           {task.project && (
-            <span className="ml-2 text-xs text-muted-foreground">
-              {task.project.name}
-            </span>
+            <span className="ml-2 text-xs text-muted-foreground">{task.project.name}</span>
           )}
         </div>
       </TableCell>
@@ -109,10 +107,7 @@ export function TaskRowComponent({ task, onEdit }: TaskRowProps) {
               <Pencil className="mr-2 h-4 w-4" />
               編集
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={handleDelete}
-              className="text-destructive"
-            >
+            <DropdownMenuItem onClick={handleDelete} className="text-destructive">
               <Trash2 className="mr-2 h-4 w-4" />
               削除
             </DropdownMenuItem>

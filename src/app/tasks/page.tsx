@@ -1,8 +1,8 @@
-import { db } from "@/db";
-import { tasks, projects } from "@/db/schema";
-import { eq, and, desc, asc } from "drizzle-orm";
-import { TaskTable } from "@/components/tasks/task-table";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { TaskPageHeader } from "@/components/tasks/task-page-header";
+import { TaskTable } from "@/components/tasks/task-table";
+import { db } from "@/db";
+import { projects, tasks } from "@/db/schema";
 
 export default async function TasksPage({
   searchParams,

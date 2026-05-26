@@ -1,9 +1,9 @@
 "use server";
 
-import { db } from "@/db";
-import { projects } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { db } from "@/db";
+import { projects } from "@/db/schema";
 
 export async function createProject(data: {
   name: string;
@@ -28,7 +28,7 @@ export async function updateProject(
     description?: string;
     status?: string;
     color?: string;
-  }
+  },
 ) {
   await db
     .update(projects)

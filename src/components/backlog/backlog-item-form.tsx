@@ -2,15 +2,10 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { createBacklogItem, updateBacklogItem } from "@/app/backlog/actions";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -18,11 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BACKLOG_STATUS, BACKLOG_PRIORITY } from "@/lib/constants";
-import {
-  createBacklogItem,
-  updateBacklogItem,
-} from "@/app/backlog/actions";
+import { Textarea } from "@/components/ui/textarea";
+import { BACKLOG_PRIORITY, BACKLOG_STATUS } from "@/lib/constants";
 
 export type BacklogItemData = {
   id: string;
@@ -67,7 +59,7 @@ export function BacklogItemForm({
           categoryId: formData.get("categoryId") as string,
           status: formData.get("status") as string,
           priority: formData.get("priority") as string,
-          rating: ratingStr ? parseInt(ratingStr) : null,
+          rating: ratingStr ? parseInt(ratingStr, 10) : null,
           url: (formData.get("url") as string) || null,
         });
       } else {
@@ -89,9 +81,7 @@ export function BacklogItemForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? "アイテムを編集" : "新規アイテム"}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "アイテムを編集" : "新規アイテム"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -127,9 +117,7 @@ export function BacklogItemForm({
               </label>
               <Select
                 name="categoryId"
-                defaultValue={
-                  item?.categoryId ?? defaultCategoryId ?? categories[0]?.id
-                }
+                defaultValue={item?.categoryId ?? defaultCategoryId ?? categories[0]?.id}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -148,10 +136,7 @@ export function BacklogItemForm({
               <label htmlFor="status" className="text-sm font-medium">
                 ステータス
               </label>
-              <Select
-                name="status"
-                defaultValue={item?.status ?? "not_started"}
-              >
+              <Select name="status" defaultValue={item?.status ?? "not_started"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -171,10 +156,7 @@ export function BacklogItemForm({
               <label htmlFor="priority" className="text-sm font-medium">
                 優先度
               </label>
-              <Select
-                name="priority"
-                defaultValue={item?.priority ?? "medium"}
-              >
+              <Select name="priority" defaultValue={item?.priority ?? "medium"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -193,10 +175,7 @@ export function BacklogItemForm({
                 <label htmlFor="rating" className="text-sm font-medium">
                   評価 (1-5)
                 </label>
-                <Select
-                  name="rating"
-                  defaultValue={item?.rating?.toString() ?? ""}
-                >
+                <Select name="rating" defaultValue={item?.rating?.toString() ?? ""}>
                   <SelectTrigger>
                     <SelectValue placeholder="未評価" />
                   </SelectTrigger>
@@ -226,11 +205,7 @@ export function BacklogItemForm({
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               キャンセル
             </Button>
             <Button type="submit" disabled={isPending}>

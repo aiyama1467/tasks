@@ -1,6 +1,6 @@
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import Link from "next/link";
 
 interface ProjectSummary {
   id: string;
@@ -19,19 +19,12 @@ const COLOR_DOT: Record<string, string> = {
   pink: "bg-pink-500",
 };
 
-export function ActiveProjects({
-  projects,
-}: {
-  projects: ProjectSummary[];
-}) {
+export function ActiveProjects({ projects }: { projects: ProjectSummary[] }) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="text-base">進行中プロジェクト</CardTitle>
-        <Link
-          href="/projects"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
+        <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground">
           すべて表示
         </Link>
       </CardHeader>
@@ -43,9 +36,7 @@ export function ActiveProjects({
         ) : (
           projects.map((project) => {
             const progress =
-              project.taskCount > 0
-                ? Math.round((project.doneCount / project.taskCount) * 100)
-                : 0;
+              project.taskCount > 0 ? Math.round((project.doneCount / project.taskCount) * 100) : 0;
             return (
               <Link
                 key={project.id}

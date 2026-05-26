@@ -1,18 +1,14 @@
-import { db } from "@/db";
-import { projects, tasks } from "@/db/schema";
-import { eq, count, and } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
+import { TaskTable } from "@/components/tasks/task-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { db } from "@/db";
+import { projects, tasks } from "@/db/schema";
 import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
-import { TaskTable } from "@/components/tasks/task-table";
-import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
 
-export default async function ProjectDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   const project = await db.query.projects.findFirst({
@@ -71,15 +67,10 @@ export default async function ProjectDetailPage({
           allProjects={allProjects}
         />
 
-        {project.description && (
-          <p className="text-muted-foreground">{project.description}</p>
-        )}
+        {project.description && <p className="text-muted-foreground">{project.description}</p>}
 
         <div className="flex items-center gap-4">
-          <Badge
-            variant="outline"
-            className={PROJECT_STATUS_COLOR[project.status]}
-          >
+          <Badge variant="outline" className={PROJECT_STATUS_COLOR[project.status]}>
             {PROJECT_STATUS[project.status as keyof typeof PROJECT_STATUS]}
           </Badge>
           <div className="flex flex-1 items-center gap-3">

@@ -1,20 +1,20 @@
 "use client";
 
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTransition } from "react";
+import { toast } from "sonner";
+import { deleteProject } from "@/app/projects/actions";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { deleteProject } from "@/app/projects/actions";
-import { useTransition } from "react";
-import { toast } from "sonner";
+import { Progress } from "@/components/ui/progress";
+import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
 import type { ProjectData } from "./project-form";
 
 const COLOR_MAP: Record<string, string> = {
@@ -37,9 +37,7 @@ interface ProjectCardProps {
 export function ProjectCard({ project, onEdit }: ProjectCardProps) {
   const [isPending, startTransition] = useTransition();
   const progress =
-    project.taskCount > 0
-      ? Math.round((project.doneCount / project.taskCount) * 100)
-      : 0;
+    project.taskCount > 0 ? Math.round((project.doneCount / project.taskCount) * 100) : 0;
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -54,9 +52,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
     >
       <CardHeader className="flex flex-row items-start justify-between pb-2">
         <Link href={`/projects/${project.id}`} className="flex-1">
-          <CardTitle className="text-base hover:underline">
-            {project.name}
-          </CardTitle>
+          <CardTitle className="text-base hover:underline">{project.name}</CardTitle>
         </Link>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className={PROJECT_STATUS_COLOR[project.status]}>
@@ -71,10 +67,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
                 <Pencil className="mr-2 h-4 w-4" />
                 編集
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleDelete}
-                className="text-destructive"
-              >
+              <DropdownMenuItem onClick={handleDelete} className="text-destructive">
                 <Trash2 className="mr-2 h-4 w-4" />
                 削除
               </DropdownMenuItem>
@@ -84,9 +77,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
       </CardHeader>
       <CardContent>
         {project.description && (
-          <p className="mb-3 text-sm text-muted-foreground line-clamp-2">
-            {project.description}
-          </p>
+          <p className="mb-3 text-sm text-muted-foreground line-clamp-2">{project.description}</p>
         )}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">

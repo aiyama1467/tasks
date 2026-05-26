@@ -1,8 +1,6 @@
-import { db } from "@/db";
-import { backlogItems, categories } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import { BacklogBoard } from "@/components/backlog/backlog-board";
 import { BacklogStats } from "@/components/backlog/backlog-stats";
+import { db } from "@/db";
 
 export default async function BacklogPage({
   searchParams,

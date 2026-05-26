@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface BacklogSummary {
   id: string;
@@ -10,19 +10,12 @@ interface BacklogSummary {
   url: string | null;
 }
 
-export function InProgressBacklog({
-  items,
-}: {
-  items: BacklogSummary[];
-}) {
+export function InProgressBacklog({ items }: { items: BacklogSummary[] }) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="text-base">進行中のバックログ</CardTitle>
-        <Link
-          href="/backlog"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
+        <Link href="/backlog" className="text-sm text-muted-foreground hover:text-foreground">
           すべて表示
         </Link>
       </CardHeader>

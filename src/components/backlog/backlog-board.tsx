@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -11,13 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus } from "lucide-react";
-import { BacklogItemCard } from "./backlog-item-card";
-import {
-  BacklogItemForm,
-  type BacklogItemData,
-} from "./backlog-item-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BACKLOG_STATUS } from "@/lib/constants";
+import { BacklogItemCard } from "./backlog-item-card";
+import { type BacklogItemData, BacklogItemForm } from "./backlog-item-form";
 
 interface Category {
   id: string;
@@ -31,11 +28,7 @@ interface BacklogBoardProps {
   activeCategory: string;
 }
 
-export function BacklogBoard({
-  categories,
-  items,
-  activeCategory,
-}: BacklogBoardProps) {
+export function BacklogBoard({ categories, items, activeCategory }: BacklogBoardProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showForm, setShowForm] = useState(false);
@@ -64,20 +57,12 @@ export function BacklogBoard({
     return true;
   });
 
-  const categoryMap = categories.reduce(
-    (acc, c) => {
-      acc[c.id] = c.name;
-      return acc;
-    },
-    {} as Record<string, string>
-  );
-
   const itemsByCategory = categories.reduce(
     (acc, c) => {
       acc[c.id] = filteredItems.filter((i) => i.categoryId === c.id);
       return acc;
     },
-    {} as Record<string, BacklogItemData[]>
+    {} as Record<string, BacklogItemData[]>,
   );
 
   return (
@@ -133,11 +118,7 @@ export function BacklogBoard({
               </div>
             ) : (
               (itemsByCategory[c.id] ?? []).map((item) => (
-                <BacklogItemCard
-                  key={item.id}
-                  item={item}
-                  onEdit={setEditingItem}
-                />
+                <BacklogItemCard key={item.id} item={item} onEdit={setEditingItem} />
               ))
             )}
           </TabsContent>

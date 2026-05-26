@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Plus, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { TaskForm } from "@/components/tasks/task-form";
+import { Button } from "@/components/ui/button";
 import type { ProjectData } from "./project-form";
 
 interface ProjectDetailHeaderProps {
@@ -12,10 +12,7 @@ interface ProjectDetailHeaderProps {
   allProjects: { id: string; name: string }[];
 }
 
-export function ProjectDetailHeader({
-  project,
-  allProjects,
-}: ProjectDetailHeaderProps) {
+export function ProjectDetailHeader({ project, allProjects }: ProjectDetailHeaderProps) {
   const [showTaskForm, setShowTaskForm] = useState(false);
 
   const defaultTask = {

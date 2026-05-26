@@ -2,15 +2,10 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { createProject, updateProject } from "@/app/projects/actions";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -18,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { PROJECT_STATUS } from "@/lib/constants";
-import { createProject, updateProject } from "@/app/projects/actions";
 
 const PROJECT_COLORS = [
   { value: "blue", label: "青", class: "bg-blue-500" },
@@ -74,9 +69,7 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? "プロジェクトを編集" : "新規プロジェクト"}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "プロジェクトを編集" : "新規プロジェクト"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -110,10 +103,7 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
               <label htmlFor="status" className="text-sm font-medium">
                 ステータス
               </label>
-              <Select
-                name="status"
-                defaultValue={project?.status ?? "active"}
-              >
+              <Select name="status" defaultValue={project?.status ?? "active"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -131,10 +121,7 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
               <label htmlFor="color" className="text-sm font-medium">
                 カラー
               </label>
-              <Select
-                name="color"
-                defaultValue={project?.color ?? "blue"}
-              >
+              <Select name="color" defaultValue={project?.color ?? "blue"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -142,9 +129,7 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
                   {PROJECT_COLORS.map((c) => (
                     <SelectItem key={c.value} value={c.value}>
                       <span className="flex items-center gap-2">
-                        <span
-                          className={`inline-block h-3 w-3 rounded-full ${c.class}`}
-                        />
+                        <span className={`inline-block h-3 w-3 rounded-full ${c.class}`} />
                         {c.label}
                       </span>
                     </SelectItem>
@@ -155,11 +140,7 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               キャンセル
             </Button>
             <Button type="submit" disabled={isPending}>

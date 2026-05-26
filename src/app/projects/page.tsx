@@ -1,8 +1,8 @@
-import { db } from "@/db";
-import { projects, tasks } from "@/db/schema";
-import { eq, count, and } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { ProjectList } from "@/components/projects/project-list";
 import { ProjectPageHeader } from "@/components/projects/project-page-header";
+import { db } from "@/db";
+import { tasks } from "@/db/schema";
 
 export default async function ProjectsPage() {
   const projectList = await db.query.projects.findMany({
@@ -30,7 +30,7 @@ export default async function ProjectsPage() {
         taskCount: taskCountResult.value,
         doneCount: doneCountResult.value,
       };
-    })
+    }),
   );
 
   return (

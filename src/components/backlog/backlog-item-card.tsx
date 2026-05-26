@@ -1,9 +1,11 @@
 "use client";
 
+import { ExternalLink, MoreHorizontal, Pencil, Star, Trash2 } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
+import { deleteBacklogItem, updateBacklogItemStatus } from "@/app/backlog/actions";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,16 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  BACKLOG_STATUS,
-  BACKLOG_STATUS_COLOR,
-  BACKLOG_PRIORITY,
-} from "@/lib/constants";
-import {
-  updateBacklogItemStatus,
-  deleteBacklogItem,
-} from "@/app/backlog/actions";
-import { MoreHorizontal, Pencil, Trash2, ExternalLink, Star } from "lucide-react";
+import { BACKLOG_PRIORITY, BACKLOG_STATUS } from "@/lib/constants";
 import type { BacklogItemData } from "./backlog-item-form";
 
 interface BacklogItemCardProps {
@@ -78,10 +71,7 @@ export function BacklogItemCard({ item, onEdit }: BacklogItemCardProps) {
                   <Pencil className="mr-2 h-4 w-4" />
                   編集
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleDelete}
-                  className="text-destructive"
-                >
+                <DropdownMenuItem onClick={handleDelete} className="text-destructive">
                   <Trash2 className="mr-2 h-4 w-4" />
                   削除
                 </DropdownMenuItem>
@@ -90,9 +80,7 @@ export function BacklogItemCard({ item, onEdit }: BacklogItemCardProps) {
           </div>
 
           {item.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {item.description}
-            </p>
+            <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
           )}
 
           <div className="flex items-center gap-2">

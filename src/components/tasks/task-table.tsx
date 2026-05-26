@@ -1,15 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TaskRowComponent, type TaskRow } from "./task-row";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TaskForm } from "./task-form";
+import { type TaskRow, TaskRowComponent } from "./task-row";
 
 interface TaskTableProps {
   tasks: TaskRow[];
@@ -23,9 +17,7 @@ export function TaskTable({ tasks, projects }: TaskTableProps) {
     <>
       {tasks.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <p className="text-lg font-medium text-muted-foreground">
-            タスクがありません
-          </p>
+          <p className="text-lg font-medium text-muted-foreground">タスクがありません</p>
           <p className="mt-1 text-sm text-muted-foreground">
             「新規タスク」ボタンからタスクを追加しましょう
           </p>
@@ -44,11 +36,7 @@ export function TaskTable({ tasks, projects }: TaskTableProps) {
             </TableHeader>
             <TableBody>
               {tasks.map((task) => (
-                <TaskRowComponent
-                  key={task.id}
-                  task={task}
-                  onEdit={setEditingTask}
-                />
+                <TaskRowComponent key={task.id} task={task} onEdit={setEditingTask} />
               ))}
             </TableBody>
           </Table>

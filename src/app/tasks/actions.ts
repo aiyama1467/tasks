@@ -1,9 +1,9 @@
 "use server";
 
-import { db } from "@/db";
-import { tasks } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { db } from "@/db";
+import { tasks } from "@/db/schema";
 
 export async function createTask(data: {
   title: string;
@@ -34,7 +34,7 @@ export async function updateTask(
     priority?: string;
     dueDate?: string | null;
     projectId?: string | null;
-  }
+  },
 ) {
   await db
     .update(tasks)
@@ -49,10 +49,7 @@ export async function updateTask(
 }
 
 export async function updateTaskStatus(id: string, status: string) {
-  await db
-    .update(tasks)
-    .set({ status, updatedAt: new Date() })
-    .where(eq(tasks.id, id));
+  await db.update(tasks).set({ status, updatedAt: new Date() }).where(eq(tasks.id, id));
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
 }
