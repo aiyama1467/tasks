@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { createBacklogItem, updateBacklogItem } from "@/app/backlog/actions";
+import { createBacklogItem, updateBacklogItem } from "@/app/(app)/backlog/actions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

@@ -1,6 +1,7 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { tasks } from "@/db/schema";
@@ -13,7 +14,11 @@ export async function createTask(data: {
   dueDate?: string;
   projectId?: string;
 }) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("認証が必要です");
+
   await db.insert(tasks).values({
+    userId,
     title: data.title,
     description: data.description || null,
     status: data.status || "todo",
@@ -36,26 +41,38 @@ export async function updateTask(
     projectId?: string | null;
   },
 ) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("認証が必要です");
+
   await db
     .update(tasks)
     .set({
       ...data,
       updatedAt: new Date(),
     })
-    .where(eq(tasks.id, id));
+    .where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
   revalidatePath("/projects");
 }
 
 export async function updateTaskStatus(id: string, status: string) {
-  await db.update(tasks).set({ status, updatedAt: new Date() }).where(eq(tasks.id, id));
+  const { userId } = await auth();
+  if (!userId) throw new Error("認証が必要です");
+
+  await db
+    .update(tasks)
+    .set({ status, updatedAt: new Date() })
+    .where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
 }
 
 export async function deleteTask(id: string) {
-  await db.delete(tasks).where(eq(tasks.id, id));
+  const { userId } = await auth();
+  if (!userId) throw new Error("認証が必要です");
+
+  await db.delete(tasks).where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
 }

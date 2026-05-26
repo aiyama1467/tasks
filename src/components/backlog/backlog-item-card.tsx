@@ -3,7 +3,7 @@
 import { ExternalLink, MoreHorizontal, Pencil, Star, Trash2 } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { deleteBacklogItem, updateBacklogItemStatus } from "@/app/backlog/actions";
+import { deleteBacklogItem, updateBacklogItemStatus } from "@/app/(app)/backlog/actions";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {

@@ -1,11 +1,17 @@
+import { auth } from "@clerk/nextjs/server";
 import { and, count, eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { ProjectList } from "@/components/projects/project-list";
 import { ProjectPageHeader } from "@/components/projects/project-page-header";
 import { db } from "@/db";
-import { tasks } from "@/db/schema";
+import { projects, tasks } from "@/db/schema";
 
 export default async function ProjectsPage() {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
+
   const projectList = await db.query.projects.findMany({
+    where: eq(projects.userId, userId),
     orderBy: (projects, { desc }) => [desc(projects.createdAt)],
   });
 
@@ -14,12 +20,14 @@ export default async function ProjectsPage() {
       const [taskCountResult] = await db
         .select({ value: count() })
         .from(tasks)
-        .where(eq(tasks.projectId, project.id));
+        .where(and(eq(tasks.userId, userId), eq(tasks.projectId, project.id)));
 
       const [doneCountResult] = await db
         .select({ value: count() })
         .from(tasks)
-        .where(and(eq(tasks.projectId, project.id), eq(tasks.status, "done")));
+        .where(
+          and(eq(tasks.userId, userId), eq(tasks.projectId, project.id), eq(tasks.status, "done")),
+        );
 
       return {
         id: project.id,

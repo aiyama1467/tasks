@@ -1,5 +1,6 @@
 "use client";
 
+import { UserButton } from "@clerk/nextjs";
 import { CheckSquare, FolderKanban, LayoutDashboard, Library } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -45,6 +46,12 @@ export function Sidebar() {
           );
         })}
       </nav>
+      <div className="border-t p-3">
+        <div className="flex items-center gap-3 rounded-md px-3 py-2">
+          <UserButton />
+          <span className="text-sm text-muted-foreground">アカウント</span>
+        </div>
+      </div>
     </aside>
   );
 }

@@ -1,4 +1,6 @@
+import { auth } from "@clerk/nextjs/server";
 import { and, count, eq, gte, lt, ne } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { ActiveProjects } from "@/components/dashboard/active-projects";
 import { InProgressBacklog } from "@/components/dashboard/in-progress-backlog";
 import { StatsOverview } from "@/components/dashboard/stats-overview";
@@ -7,6 +9,9 @@ import { db } from "@/db";
 import { backlogItems, projects, tasks } from "@/db/schema";
 
 export default async function DashboardPage() {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
+
   const today = new Date().toISOString().split("T")[0];
 
   const startOfWeek = new Date();
@@ -22,62 +27,65 @@ export default async function DashboardPage() {
     inProgressBacklogList,
     overdueTCount,
   ] = await Promise.all([
-    // Today's tasks
     db.query.tasks.findMany({
-      where: and(eq(tasks.dueDate, today), ne(tasks.status, "done")),
+      where: and(eq(tasks.userId, userId), eq(tasks.dueDate, today), ne(tasks.status, "done")),
       with: { project: true },
       orderBy: (tasks, { desc }) => [desc(tasks.priority)],
     }),
 
-    // Overdue tasks
     db.query.tasks.findMany({
-      where: and(lt(tasks.dueDate, today), ne(tasks.status, "done")),
+      where: and(eq(tasks.userId, userId), lt(tasks.dueDate, today), ne(tasks.status, "done")),
       with: { project: true },
       orderBy: (tasks, { desc }) => [desc(tasks.priority)],
     }),
 
-    // Open tasks count
-    db.select({ value: count() }).from(tasks).where(ne(tasks.status, "done")),
-
-    // Completed this week
     db
       .select({ value: count() })
       .from(tasks)
-      .where(and(eq(tasks.status, "done"), gte(tasks.updatedAt, new Date(weekStart)))),
+      .where(and(eq(tasks.userId, userId), ne(tasks.status, "done"))),
 
-    // Active projects with stats (top 5)
+    db
+      .select({ value: count() })
+      .from(tasks)
+      .where(
+        and(
+          eq(tasks.userId, userId),
+          eq(tasks.status, "done"),
+          gte(tasks.updatedAt, new Date(weekStart)),
+        ),
+      ),
+
     db.query.projects.findMany({
-      where: eq(projects.status, "active"),
+      where: and(eq(projects.userId, userId), eq(projects.status, "active")),
       orderBy: (projects, { desc }) => [desc(projects.updatedAt)],
       limit: 5,
     }),
 
-    // In-progress backlog items
     db.query.backlogItems.findMany({
-      where: eq(backlogItems.status, "in_progress"),
+      where: and(eq(backlogItems.userId, userId), eq(backlogItems.status, "in_progress")),
       with: { category: true },
       orderBy: (backlogItems, { desc }) => [desc(backlogItems.updatedAt)],
     }),
 
-    // Overdue count
     db
       .select({ value: count() })
       .from(tasks)
-      .where(and(lt(tasks.dueDate, today), ne(tasks.status, "done"))),
+      .where(and(eq(tasks.userId, userId), lt(tasks.dueDate, today), ne(tasks.status, "done"))),
   ]);
 
-  // Get task counts for active projects
   const projectsWithStats = await Promise.all(
     activeProjectList.map(async (project) => {
       const [taskCountResult] = await db
         .select({ value: count() })
         .from(tasks)
-        .where(eq(tasks.projectId, project.id));
+        .where(and(eq(tasks.userId, userId), eq(tasks.projectId, project.id)));
 
       const [doneCountResult] = await db
         .select({ value: count() })
         .from(tasks)
-        .where(and(eq(tasks.projectId, project.id), eq(tasks.status, "done")));
+        .where(
+          and(eq(tasks.userId, userId), eq(tasks.projectId, project.id), eq(tasks.status, "done")),
+        );
 
       return {
         id: project.id,

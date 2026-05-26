@@ -1,5 +1,6 @@
+import { auth } from "@clerk/nextjs/server";
 import { and, count, eq } from "drizzle-orm";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
 import { TaskTable } from "@/components/tasks/task-table";
 import { Badge } from "@/components/ui/badge";
@@ -9,10 +10,13 @@ import { projects, tasks } from "@/db/schema";
 import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
+
   const { id } = await params;
 
   const project = await db.query.projects.findFirst({
-    where: eq(projects.id, id),
+    where: and(eq(projects.id, id), eq(projects.userId, userId)),
   });
 
   if (!project) notFound();
@@ -20,25 +24,25 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const [taskCountResult] = await db
     .select({ value: count() })
     .from(tasks)
-    .where(eq(tasks.projectId, id));
+    .where(and(eq(tasks.userId, userId), eq(tasks.projectId, id)));
 
   const [doneCountResult] = await db
     .select({ value: count() })
     .from(tasks)
-    .where(and(eq(tasks.projectId, id), eq(tasks.status, "done")));
+    .where(and(eq(tasks.userId, userId), eq(tasks.projectId, id), eq(tasks.status, "done")));
 
   const taskCount = taskCountResult.value;
   const doneCount = doneCountResult.value;
   const progress = taskCount > 0 ? Math.round((doneCount / taskCount) * 100) : 0;
 
   const taskList = await db.query.tasks.findMany({
-    where: eq(tasks.projectId, id),
+    where: and(eq(tasks.userId, userId), eq(tasks.projectId, id)),
     with: { project: true },
     orderBy: (tasks, { asc, desc }) => [asc(tasks.status), desc(tasks.createdAt)],
   });
 
   const allProjects = await db.query.projects.findMany({
-    where: eq(projects.status, "active"),
+    where: and(eq(projects.userId, userId), eq(projects.status, "active")),
     columns: { id: true, name: true },
   });
 

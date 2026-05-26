@@ -3,7 +3,7 @@
 import { AlertTriangle, CheckSquare, Square } from "lucide-react";
 import Link from "next/link";
 import { useTransition } from "react";
-import { updateTaskStatus } from "@/app/tasks/actions";
+import { updateTaskStatus } from "@/app/(app)/tasks/actions";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TASK_PRIORITY, TASK_PRIORITY_COLOR } from "@/lib/constants";

@@ -1,12 +1,19 @@
+import { auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { BacklogBoard } from "@/components/backlog/backlog-board";
 import { BacklogStats } from "@/components/backlog/backlog-stats";
 import { db } from "@/db";
+import { backlogItems } from "@/db/schema";
 
 export default async function BacklogPage({
   searchParams,
 }: {
   searchParams: Promise<{ category?: string; status?: string }>;
 }) {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
+
   const params = await searchParams;
 
   const [categoryList, itemList] = await Promise.all([
@@ -14,6 +21,7 @@ export default async function BacklogPage({
       orderBy: (categories, { asc }) => [asc(categories.position)],
     }),
     db.query.backlogItems.findMany({
+      where: eq(backlogItems.userId, userId),
       orderBy: (backlogItems, { desc }) => [desc(backlogItems.createdAt)],
     }),
   ]);

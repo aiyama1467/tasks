@@ -3,7 +3,7 @@
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { deleteTask, updateTaskStatus } from "@/app/tasks/actions";
+import { deleteTask, updateTaskStatus } from "@/app/(app)/tasks/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,

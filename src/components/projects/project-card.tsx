@@ -4,7 +4,7 @@ import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { deleteProject } from "@/app/projects/actions";
+import { deleteProject } from "@/app/(app)/projects/actions";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {

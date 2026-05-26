@@ -1,6 +1,7 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { backlogItems } from "@/db/schema";
@@ -13,10 +14,14 @@ export async function createBacklogItem(data: {
   priority?: string;
   url?: string;
 }) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("認証が必要です");
+
   const now = new Date().toISOString().split("T")[0];
   const status = data.status || "not_started";
 
   await db.insert(backlogItems).values({
+    userId,
     title: data.title,
     description: data.description || null,
     categoryId: data.categoryId,
@@ -42,8 +47,11 @@ export async function updateBacklogItem(
     url?: string | null;
   },
 ) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("認証が必要です");
+
   const existing = await db.query.backlogItems.findFirst({
-    where: eq(backlogItems.id, id),
+    where: and(eq(backlogItems.id, id), eq(backlogItems.userId, userId)),
   });
   if (!existing) return;
 
@@ -69,7 +77,10 @@ export async function updateBacklogItem(
     }
   }
 
-  await db.update(backlogItems).set(updates).where(eq(backlogItems.id, id));
+  await db
+    .update(backlogItems)
+    .set(updates)
+    .where(and(eq(backlogItems.id, id), eq(backlogItems.userId, userId)));
   revalidatePath("/backlog");
   revalidatePath("/dashboard");
 }
@@ -79,7 +90,12 @@ export async function updateBacklogItemStatus(id: string, status: string) {
 }
 
 export async function deleteBacklogItem(id: string) {
-  await db.delete(backlogItems).where(eq(backlogItems.id, id));
+  const { userId } = await auth();
+  if (!userId) throw new Error("認証が必要です");
+
+  await db
+    .delete(backlogItems)
+    .where(and(eq(backlogItems.id, id), eq(backlogItems.userId, userId)));
   revalidatePath("/backlog");
   revalidatePath("/dashboard");
 }

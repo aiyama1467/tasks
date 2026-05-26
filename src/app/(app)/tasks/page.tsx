@@ -1,4 +1,6 @@
+import { auth } from "@clerk/nextjs/server";
 import { and, asc, desc, eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { TaskPageHeader } from "@/components/tasks/task-page-header";
 import { TaskTable } from "@/components/tasks/task-table";
 import { db } from "@/db";
@@ -9,9 +11,12 @@ export default async function TasksPage({
 }: {
   searchParams: Promise<{ status?: string; priority?: string; sort?: string }>;
 }) {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
+
   const params = await searchParams;
 
-  const conditions = [];
+  const conditions = [eq(tasks.userId, userId)];
   if (params.status && params.status !== "all") {
     conditions.push(eq(tasks.status, params.status));
   }
@@ -19,16 +24,14 @@ export default async function TasksPage({
     conditions.push(eq(tasks.priority, params.priority));
   }
 
-  const where = conditions.length > 0 ? and(...conditions) : undefined;
-
   const [taskList, projectList] = await Promise.all([
     db.query.tasks.findMany({
-      where,
+      where: and(...conditions),
       with: { project: true },
       orderBy: [asc(tasks.status), desc(tasks.createdAt)],
     }),
     db.query.projects.findMany({
-      where: eq(projects.status, "active"),
+      where: and(eq(projects.userId, userId), eq(projects.status, "active")),
       columns: { id: true, name: true },
     }),
   ]);
