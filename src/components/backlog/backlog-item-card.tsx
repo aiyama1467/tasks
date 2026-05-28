@@ -84,7 +84,7 @@ export function BacklogItemCard({ item, onEdit }: BacklogItemCardProps) {
           )}
 
           <div className="flex items-center gap-2">
-            <Select value={item.status} onValueChange={handleStatusChange}>
+            <Select value={item.status} onValueChange={handleStatusChange} items={BACKLOG_STATUS}>
               <SelectTrigger className="h-7 w-24 text-xs">
                 <SelectValue />
               </SelectTrigger>

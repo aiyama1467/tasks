@@ -78,7 +78,7 @@ export function TaskRowComponent({ task, onEdit }: TaskRowProps) {
         </div>
       </TableCell>
       <TableCell>
-        <Select value={task.status} onValueChange={handleStatusChange}>
+        <Select value={task.status} onValueChange={handleStatusChange} items={TASK_STATUS}>
           <SelectTrigger className="h-8 w-28">
             <SelectValue />
           </SelectTrigger>
