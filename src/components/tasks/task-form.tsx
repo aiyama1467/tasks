@@ -26,7 +26,7 @@ interface TaskFormProps {
 
 export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) {
   const [isPending, startTransition] = useTransition();
-  const isEditing = !!task;
+  const isEditing = !!task?.id;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
