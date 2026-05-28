@@ -74,7 +74,13 @@ export function TaskRowComponent({ task, onEdit }: TaskRowProps) {
     <TableRow className={isPending ? "opacity-50" : ""}>
       <TableCell className="font-medium">
         <div>
-          <span>{task.title}</span>
+          <button
+            type="button"
+            onClick={() => onEdit(task)}
+            className="text-left font-medium hover:underline focus:outline-none"
+          >
+            {task.title}
+          </button>
           {task.project && (
             <span className="ml-2 text-xs text-muted-foreground">{task.project.name}</span>
           )}

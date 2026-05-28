@@ -50,7 +50,13 @@ export function BacklogItemCard({ item, onEdit }: BacklogItemCardProps) {
         <div className="flex-1 space-y-2">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
-              <span className="font-medium">{item.title}</span>
+              <button
+                type="button"
+                onClick={() => onEdit(item)}
+                className="font-medium hover:underline focus:outline-none text-left"
+              >
+                {item.title}
+              </button>
               {item.url && (
                 <a
                   href={item.url}
