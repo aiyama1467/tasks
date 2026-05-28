@@ -1,10 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
-import { and, asc, desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { TaskPageHeader } from "@/components/tasks/task-page-header";
 import { TaskTable } from "@/components/tasks/task-table";
-import { db } from "@/db";
-import { projects, tasks } from "@/db/schema";
+import { getActiveProjects } from "@/usecases/projects";
+import { getTasks } from "@/usecases/tasks";
 
 export default async function TasksPage({
   searchParams,
@@ -16,27 +15,9 @@ export default async function TasksPage({
 
   const params = await searchParams;
 
-  const conditions = [eq(tasks.userId, userId)];
-  if (params.status && params.status !== "all") {
-    conditions.push(eq(tasks.status, params.status));
-  }
-  if (params.priority && params.priority !== "all") {
-    conditions.push(eq(tasks.priority, params.priority));
-  }
-
   const [taskList, projectList] = await Promise.all([
-    db.query.tasks.findMany({
-      where: and(...conditions),
-      with: {
-        project: { columns: { name: true } },
-        subtasks: { columns: { id: true, title: true, completed: true, position: true } },
-      },
-      orderBy: [asc(tasks.status), desc(tasks.createdAt)],
-    }),
-    db.query.projects.findMany({
-      where: and(eq(projects.userId, userId), eq(projects.status, "active")),
-      columns: { id: true, name: true },
-    }),
+    getTasks(userId, { status: params.status, priority: params.priority }),
+    getActiveProjects(userId),
   ]);
 
   const mappedTasks = taskList.map((t) => ({

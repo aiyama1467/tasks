@@ -1,13 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
-import { and, count, eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
 import { TaskTable } from "@/components/tasks/task-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { db } from "@/db";
-import { projects, tasks } from "@/db/schema";
 import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
+import { getActiveProjects, getProjectById, getProjectTaskStats } from "@/usecases/projects";
+import { getTasksByProject } from "@/usecases/tasks";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { userId } = await auth();
@@ -15,36 +14,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   const { id } = await params;
 
-  const project = await db.query.projects.findFirst({
-    where: and(eq(projects.id, id), eq(projects.userId, userId)),
-  });
-
+  const project = await getProjectById(userId, id);
   if (!project) notFound();
 
-  const [taskCountResult] = await db
-    .select({ value: count() })
-    .from(tasks)
-    .where(and(eq(tasks.userId, userId), eq(tasks.projectId, id)));
+  const [{ taskCount, doneCount }, taskList, allProjects] = await Promise.all([
+    getProjectTaskStats(userId, id),
+    getTasksByProject(userId, id),
+    getActiveProjects(userId),
+  ]);
 
-  const [doneCountResult] = await db
-    .select({ value: count() })
-    .from(tasks)
-    .where(and(eq(tasks.userId, userId), eq(tasks.projectId, id), eq(tasks.status, "done")));
-
-  const taskCount = taskCountResult.value;
-  const doneCount = doneCountResult.value;
   const progress = taskCount > 0 ? Math.round((doneCount / taskCount) * 100) : 0;
-
-  const taskList = await db.query.tasks.findMany({
-    where: and(eq(tasks.userId, userId), eq(tasks.projectId, id)),
-    with: { project: true },
-    orderBy: (tasks, { asc, desc }) => [asc(tasks.status), desc(tasks.createdAt)],
-  });
-
-  const allProjects = await db.query.projects.findMany({
-    where: and(eq(projects.userId, userId), eq(projects.status, "active")),
-    columns: { id: true, name: true },
-  });
 
   const mappedTasks = taskList.map((t) => ({
     id: t.id,

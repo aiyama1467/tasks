@@ -1,10 +1,8 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { db } from "@/db";
-import { tasks } from "@/db/schema";
+import * as tasks from "@/usecases/tasks";
 
 export async function createTask(data: {
   title: string;
@@ -17,15 +15,7 @@ export async function createTask(data: {
   const { userId } = await auth();
   if (!userId) throw new Error("認証が必要です");
 
-  await db.insert(tasks).values({
-    userId,
-    title: data.title,
-    description: data.description || null,
-    status: data.status || "todo",
-    priority: data.priority || "medium",
-    dueDate: data.dueDate || null,
-    projectId: data.projectId || null,
-  });
+  await tasks.createTask(userId, data);
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
 }
@@ -44,13 +34,7 @@ export async function updateTask(
   const { userId } = await auth();
   if (!userId) throw new Error("認証が必要です");
 
-  await db
-    .update(tasks)
-    .set({
-      ...data,
-      updatedAt: new Date(),
-    })
-    .where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
+  await tasks.updateTask(userId, id, data);
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
   revalidatePath("/projects");
@@ -60,10 +44,7 @@ export async function updateTaskStatus(id: string, status: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("認証が必要です");
 
-  await db
-    .update(tasks)
-    .set({ status, updatedAt: new Date() })
-    .where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
+  await tasks.updateTask(userId, id, { status });
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
 }
@@ -72,7 +53,7 @@ export async function deleteTask(id: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("認証が必要です");
 
-  await db.delete(tasks).where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
+  await tasks.deleteTask(userId, id);
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
 }
