@@ -27,7 +27,10 @@ export default async function TasksPage({
   const [taskList, projectList] = await Promise.all([
     db.query.tasks.findMany({
       where: and(...conditions),
-      with: { project: true },
+      with: {
+        project: { columns: { name: true } },
+        subtasks: { columns: { id: true, title: true, completed: true, position: true } },
+      },
       orderBy: [asc(tasks.status), desc(tasks.createdAt)],
     }),
     db.query.projects.findMany({
@@ -45,6 +48,14 @@ export default async function TasksPage({
     dueDate: t.dueDate,
     projectId: t.projectId,
     project: t.project ? { name: t.project.name } : null,
+    subtasks: t.subtasks.toSorted((a, b) => a.position - b.position),
+    subtaskCount:
+      t.subtasks.length > 0
+        ? {
+            total: t.subtasks.length,
+            completed: t.subtasks.filter((s) => s.completed).length,
+          }
+        : undefined,
   }));
 
   return (

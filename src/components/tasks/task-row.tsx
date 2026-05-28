@@ -1,9 +1,10 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { CheckSquare, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { deleteTask, updateTaskStatus } from "@/app/(app)/tasks/actions";
+import type { SubtaskRow } from "@/app/(app)/tasks/subtask-actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +31,8 @@ export type TaskRow = {
   dueDate: string | null;
   projectId: string | null;
   project?: { name: string } | null;
+  subtasks?: SubtaskRow[];
+  subtaskCount?: { total: number; completed: number };
 };
 
 interface TaskRowProps {
@@ -74,6 +77,12 @@ export function TaskRowComponent({ task, onEdit }: TaskRowProps) {
           <span>{task.title}</span>
           {task.project && (
             <span className="ml-2 text-xs text-muted-foreground">{task.project.name}</span>
+          )}
+          {task.subtaskCount && (
+            <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+              <CheckSquare className="h-3 w-3" />
+              {task.subtaskCount.completed}/{task.subtaskCount.total}
+            </div>
           )}
         </div>
       </TableCell>

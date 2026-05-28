@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { date, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, date, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const projects = pgTable(
   "projects",
@@ -67,15 +67,42 @@ export const backlogItems = pgTable(
   (table) => [index("backlog_items_user_id_idx").on(table.userId)],
 );
 
+export const subtasks = pgTable(
+  "subtasks",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    taskId: uuid("task_id")
+      .notNull()
+      .references(() => tasks.id, { onDelete: "cascade" }),
+    userId: text("user_id").notNull(),
+    title: text("title").notNull(),
+    completed: boolean("completed").notNull().default(false),
+    position: integer("position").notNull().default(0),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("subtasks_task_id_idx").on(table.taskId),
+    index("subtasks_user_id_idx").on(table.userId),
+  ],
+);
+
 // Relations
 export const projectsRelations = relations(projects, ({ many }) => ({
   tasks: many(tasks),
 }));
 
-export const tasksRelations = relations(tasks, ({ one }) => ({
+export const tasksRelations = relations(tasks, ({ one, many }) => ({
   project: one(projects, {
     fields: [tasks.projectId],
     references: [projects.id],
+  }),
+  subtasks: many(subtasks),
+}));
+
+export const subtasksRelations = relations(subtasks, ({ one }) => ({
+  task: one(tasks, {
+    fields: [subtasks.taskId],
+    references: [tasks.id],
   }),
 }));
 

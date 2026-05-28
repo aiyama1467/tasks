@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { SubtaskRow } from "@/app/(app)/tasks/subtask-actions";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TaskForm } from "./task-form";
 import { type TaskRow, TaskRowComponent } from "./task-row";
@@ -12,6 +13,19 @@ interface TaskTableProps {
 
 export function TaskTable({ tasks, projects }: TaskTableProps) {
   const [editingTask, setEditingTask] = useState<TaskRow | null>(null);
+  const [subtasksMap, setSubtasksMap] = useState<Record<string, SubtaskRow[]>>(() =>
+    Object.fromEntries(tasks.map((t) => [t.id, t.subtasks ?? []])),
+  );
+
+  const handleSubtasksChange = (taskId: string, updated: SubtaskRow[]) => {
+    setSubtasksMap((prev) => ({ ...prev, [taskId]: updated }));
+  };
+
+  const getSubtaskCount = (taskId: string) => {
+    const list = subtasksMap[taskId];
+    if (!list || list.length === 0) return undefined;
+    return { total: list.length, completed: list.filter((s) => s.completed).length };
+  };
 
   return (
     <>
@@ -36,7 +50,11 @@ export function TaskTable({ tasks, projects }: TaskTableProps) {
             </TableHeader>
             <TableBody>
               {tasks.map((task) => (
-                <TaskRowComponent key={task.id} task={task} onEdit={setEditingTask} />
+                <TaskRowComponent
+                  key={task.id}
+                  task={{ ...task, subtaskCount: getSubtaskCount(task.id) }}
+                  onEdit={setEditingTask}
+                />
               ))}
             </TableBody>
           </Table>
@@ -50,6 +68,8 @@ export function TaskTable({ tasks, projects }: TaskTableProps) {
         }}
         task={editingTask}
         projects={projects}
+        initialSubtasks={editingTask ? (subtasksMap[editingTask.id] ?? []) : undefined}
+        onSubtasksChange={handleSubtasksChange}
       />
     </>
   );

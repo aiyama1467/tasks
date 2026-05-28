@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { createTask, updateTask } from "@/app/(app)/tasks/actions";
+import type { SubtaskRow } from "@/app/(app)/tasks/subtask-actions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -13,8 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { TASK_PRIORITY, TASK_STATUS } from "@/lib/constants";
+import { SubtaskPanel } from "./subtask-panel";
 import type { TaskRow } from "./task-row";
 
 interface TaskFormProps {
@@ -22,9 +25,18 @@ interface TaskFormProps {
   onOpenChange: (open: boolean) => void;
   task?: TaskRow | null;
   projects: { id: string; name: string }[];
+  initialSubtasks?: SubtaskRow[];
+  onSubtasksChange?: (taskId: string, updated: SubtaskRow[]) => void;
 }
 
-export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) {
+export function TaskForm({
+  open,
+  onOpenChange,
+  task,
+  projects,
+  initialSubtasks,
+  onSubtasksChange,
+}: TaskFormProps) {
   const [isPending, startTransition] = useTransition();
   const isEditing = !!task?.id;
 
@@ -59,7 +71,7 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEditing ? "タスクを編集" : "新規タスク"}</DialogTitle>
         </DialogHeader>
@@ -166,6 +178,17 @@ export function TaskForm({ open, onOpenChange, task, projects }: TaskFormProps) 
               </Select>
             </div>
           </div>
+
+          {isEditing && task?.id && (
+            <>
+              <Separator />
+              <SubtaskPanel
+                taskId={task.id}
+                initialSubtasks={initialSubtasks}
+                onSubtasksChange={(updated) => onSubtasksChange?.(task.id, updated)}
+              />
+            </>
+          )}
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
