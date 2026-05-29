@@ -24,7 +24,10 @@ export async function getTasks(userId: string, filters?: { status?: string; prio
 export async function getTasksByProject(userId: string, projectId: string) {
   return db.query.tasks.findMany({
     where: and(eq(tasks.userId, userId), eq(tasks.projectId, projectId)),
-    with: { project: true },
+    with: {
+      project: { columns: { name: true } },
+      subtasks: { columns: { id: true, title: true, completed: true, position: true } },
+    },
     orderBy: (tasks, { asc, desc }) => [asc(tasks.status), desc(tasks.createdAt)],
   });
 }
