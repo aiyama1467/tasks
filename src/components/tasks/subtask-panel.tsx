@@ -3,7 +3,12 @@
 import { Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { SubtaskRow } from "@/app/(app)/tasks/subtask-actions";
-import { createSubtask, deleteSubtask, toggleSubtask } from "@/app/(app)/tasks/subtask-actions";
+import {
+  createSubtask,
+  deleteSubtask,
+  toggleSubtask,
+  updateSubtask,
+} from "@/app/(app)/tasks/subtask-actions";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -17,11 +22,17 @@ interface SubtaskPanelProps {
 export function SubtaskPanel({ taskId, initialSubtasks, onSubtasksChange }: SubtaskPanelProps) {
   const [subtasks, setSubtasks] = useState<SubtaskRow[]>(initialSubtasks ?? []);
   const [newTitle, setNewTitle] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
   const [isPending, startTransition] = useTransition();
+  const editInputRef = useRef<HTMLInputElement>(null);
   const onSubtasksChangeRef = useRef(onSubtasksChange);
   useEffect(() => {
     onSubtasksChangeRef.current = onSubtasksChange;
   });
+  useEffect(() => {
+    if (editingId) editInputRef.current?.focus();
+  }, [editingId]);
 
   const update = (next: SubtaskRow[]) => {
     setSubtasks(next);
@@ -34,6 +45,26 @@ export function SubtaskPanel({ taskId, initialSubtasks, onSubtasksChange }: Subt
     startTransition(async () => {
       await toggleSubtask(id, checked);
     });
+  };
+
+  const handleStartEdit = (subtask: SubtaskRow) => {
+    setEditingId(subtask.id);
+    setEditingTitle(subtask.title);
+  };
+
+  const handleSaveEdit = (id: string) => {
+    const title = editingTitle.trim();
+    setEditingId(null);
+    if (!title) return;
+    update(subtasks.map((s) => (s.id === id ? { ...s, title } : s)));
+    startTransition(async () => {
+      await updateSubtask(id, title);
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditingTitle("");
   };
 
   const handleDelete = (id: string) => {
@@ -70,16 +101,37 @@ export function SubtaskPanel({ taskId, initialSubtasks, onSubtasksChange }: Subt
         {subtasks.map((subtask) => (
           <div key={subtask.id} className="flex items-center gap-2 group">
             <Checkbox
-              id={subtask.id}
               checked={subtask.completed}
               onCheckedChange={(checked) => handleToggle(subtask.id, checked === true)}
             />
-            <label
-              htmlFor={subtask.id}
-              className={`flex-1 cursor-pointer text-sm ${subtask.completed ? "line-through text-muted-foreground" : ""}`}
-            >
-              {subtask.title}
-            </label>
+            {editingId === subtask.id ? (
+              <input
+                ref={editInputRef}
+                value={editingTitle}
+                onChange={(e) => setEditingTitle(e.target.value)}
+                onFocus={(e) => e.target.select()}
+                onBlur={() => handleSaveEdit(subtask.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSaveEdit(subtask.id);
+                  }
+                  if (e.key === "Escape") {
+                    e.preventDefault();
+                    handleCancelEdit();
+                  }
+                }}
+                className="flex-1 text-sm bg-transparent border-b border-border outline-none"
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleStartEdit(subtask)}
+                className={`flex-1 text-left text-sm ${subtask.completed ? "line-through text-muted-foreground" : ""}`}
+              >
+                {subtask.title}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => handleDelete(subtask.id)}

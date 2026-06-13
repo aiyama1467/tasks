@@ -30,6 +30,15 @@ export async function toggleSubtask(id: string, completed: boolean): Promise<voi
   await subtasks.toggleSubtask(userId, id, completed);
 }
 
+export async function updateSubtask(id: string, title: string): Promise<void> {
+  const { userId } = await auth();
+  if (!userId) throw new Error("認証が必要です");
+
+  await subtasks.updateSubtask(userId, id, title);
+  revalidatePath("/tasks");
+  revalidatePath("/dashboard");
+}
+
 export async function deleteSubtask(id: string): Promise<void> {
   const { userId } = await auth();
   if (!userId) throw new Error("認証が必要です");

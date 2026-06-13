@@ -47,6 +47,13 @@ export async function toggleSubtask(userId: string, id: string, completed: boole
     .where(and(eq(subtasks.id, id), eq(subtasks.userId, userId)));
 }
 
+export async function updateSubtask(userId: string, id: string, title: string): Promise<void> {
+  await db
+    .update(subtasks)
+    .set({ title })
+    .where(and(eq(subtasks.id, id), eq(subtasks.userId, userId)));
+}
+
 export async function deleteSubtask(userId: string, id: string): Promise<void> {
   await db.delete(subtasks).where(and(eq(subtasks.id, id), eq(subtasks.userId, userId)));
 }
