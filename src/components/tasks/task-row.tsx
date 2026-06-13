@@ -11,16 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { TASK_STATUS } from "@/lib/constants";
 import { TaskPriorityBadge } from "./task-priority-badge";
+import { TaskStatusSelect } from "./task-status-select";
 
 export type TaskRow = {
   id: string;
@@ -93,18 +86,11 @@ export function TaskRowComponent({ task, onEdit }: TaskRowProps) {
         </div>
       </TableCell>
       <TableCell>
-        <Select value={task.status} onValueChange={handleStatusChange} items={TASK_STATUS}>
-          <SelectTrigger className="h-8 w-28">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(TASK_STATUS).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <TaskStatusSelect
+          value={task.status}
+          onValueChange={handleStatusChange}
+          triggerClassName="h-8 w-28"
+        />
       </TableCell>
       <TableCell>
         <TaskPriorityBadge priority={task.priority} />

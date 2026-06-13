@@ -8,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TASK_PRIORITY, TASK_STATUS } from "@/lib/constants";
+import { TASK_PRIORITY } from "@/lib/constants";
+import { TaskStatusSelect } from "./task-status-select";
 
 export function TaskFilters() {
   const router = useRouter();
@@ -29,23 +30,13 @@ export function TaskFilters() {
 
   return (
     <div className="flex gap-3">
-      <Select
+      <TaskStatusSelect
         value={currentStatus}
         onValueChange={(v) => updateFilter("status", v)}
-        items={{ all: "すべて", ...TASK_STATUS }}
-      >
-        <SelectTrigger className="w-32">
-          <SelectValue placeholder="ステータス" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">すべて</SelectItem>
-          {Object.entries(TASK_STATUS).map(([value, label]) => (
-            <SelectItem key={value} value={value}>
-              {label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        includeAll
+        placeholder="ステータス"
+        triggerClassName="w-32"
+      />
 
       <Select
         value={currentPriority}

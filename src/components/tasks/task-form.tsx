@@ -16,9 +16,10 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { TASK_PRIORITY, TASK_STATUS } from "@/lib/constants";
+import { TASK_PRIORITY } from "@/lib/constants";
 import { SubtaskPanel } from "./subtask-panel";
 import type { TaskRow } from "./task-row";
+import { TaskStatusSelect } from "./task-status-select";
 
 interface TaskFormProps {
   open: boolean;
@@ -107,18 +108,7 @@ export function TaskForm({
               <label htmlFor="status" className="text-sm font-medium">
                 ステータス
               </label>
-              <Select name="status" defaultValue={task?.status ?? "todo"} items={TASK_STATUS}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(TASK_STATUS).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <TaskStatusSelect name="status" defaultValue={task?.status ?? "todo"} />
             </div>
 
             <div className="space-y-2">
