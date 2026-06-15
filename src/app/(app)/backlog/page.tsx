@@ -1,7 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { BacklogBoard } from "@/components/backlog/backlog-board";
 import { BacklogStats } from "@/components/backlog/backlog-stats";
+import { requireUserIdOrRedirect } from "@/lib/auth";
 import { getBacklogItems, getCategories } from "@/usecases/backlog";
 
 export default async function BacklogPage({
@@ -9,8 +8,7 @@ export default async function BacklogPage({
 }: {
   searchParams: Promise<{ category?: string; status?: string }>;
 }) {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  const userId = await requireUserIdOrRedirect();
 
   const params = await searchParams;
 

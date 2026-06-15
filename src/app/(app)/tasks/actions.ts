@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { requireUserId } from "@/lib/auth";
 import * as tasks from "@/usecases/tasks";
 
 export async function createTask(data: {
@@ -12,8 +12,7 @@ export async function createTask(data: {
   dueDate?: string;
   projectId?: string;
 }) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await tasks.createTask(userId, data);
   revalidatePath("/tasks");
@@ -31,8 +30,7 @@ export async function updateTask(
     projectId?: string | null;
   },
 ) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await tasks.updateTask(userId, id, data);
   revalidatePath("/tasks");
@@ -41,8 +39,7 @@ export async function updateTask(
 }
 
 export async function updateTaskStatus(id: string, status: string) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await tasks.updateTask(userId, id, { status });
   revalidatePath("/tasks");
@@ -50,8 +47,7 @@ export async function updateTaskStatus(id: string, status: string) {
 }
 
 export async function deleteTask(id: string) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await tasks.deleteTask(userId, id);
   revalidatePath("/tasks");

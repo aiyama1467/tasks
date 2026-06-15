@@ -1,14 +1,12 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { ActiveProjects } from "@/components/dashboard/active-projects";
 import { InProgressBacklog } from "@/components/dashboard/in-progress-backlog";
 import { StatsOverview } from "@/components/dashboard/stats-overview";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
+import { requireUserIdOrRedirect } from "@/lib/auth";
 import { getDashboardData } from "@/usecases/dashboard";
 
 export default async function DashboardPage() {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  const userId = await requireUserIdOrRedirect();
 
   const {
     todayTasks,

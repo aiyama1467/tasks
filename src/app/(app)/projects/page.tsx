@@ -1,12 +1,10 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { ProjectList } from "@/components/projects/project-list";
 import { ProjectPageHeader } from "@/components/projects/project-page-header";
+import { requireUserIdOrRedirect } from "@/lib/auth";
 import { getProjects, getProjectTaskStats } from "@/usecases/projects";
 
 export default async function ProjectsPage() {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  const userId = await requireUserIdOrRedirect();
 
   const projectList = await getProjects(userId);
 

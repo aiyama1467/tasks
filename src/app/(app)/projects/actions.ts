@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { requireUserId } from "@/lib/auth";
 import * as projects from "@/usecases/projects";
 
 export async function createProject(data: {
@@ -10,8 +10,7 @@ export async function createProject(data: {
   status?: string;
   color?: string;
 }) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await projects.createProject(userId, data);
   revalidatePath("/projects");
@@ -22,8 +21,7 @@ export async function updateProject(
   id: string,
   data: { name?: string; description?: string; status?: string; color?: string },
 ) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await projects.updateProject(userId, id, data);
   revalidatePath("/projects");
@@ -32,8 +30,7 @@ export async function updateProject(
 }
 
 export async function deleteProject(id: string) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await projects.deleteProject(userId, id);
   revalidatePath("/projects");

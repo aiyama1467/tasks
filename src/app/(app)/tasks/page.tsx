@@ -1,7 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { TaskPageHeader } from "@/components/tasks/task-page-header";
 import { TaskTable } from "@/components/tasks/task-table";
+import { requireUserIdOrRedirect } from "@/lib/auth";
 import { getActiveProjects } from "@/usecases/projects";
 import { getTasks } from "@/usecases/tasks";
 
@@ -10,8 +9,7 @@ export default async function TasksPage({
 }: {
   searchParams: Promise<{ status?: string; priority?: string; sort?: string }>;
 }) {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  const userId = await requireUserIdOrRedirect();
 
   const params = await searchParams;
 

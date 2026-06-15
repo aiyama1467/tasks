@@ -1,16 +1,15 @@
-import { auth } from "@clerk/nextjs/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
 import { TaskTable } from "@/components/tasks/task-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { requireUserIdOrRedirect } from "@/lib/auth";
 import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
 import { getActiveProjects, getProjectById, getProjectTaskStats } from "@/usecases/projects";
 import { getTasksByProject } from "@/usecases/tasks";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  const userId = await requireUserIdOrRedirect();
 
   const { id } = await params;
 

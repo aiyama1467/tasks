@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { requireUserId } from "@/lib/auth";
 import * as backlog from "@/usecases/backlog";
 
 export async function createBacklogItem(data: {
@@ -12,8 +12,7 @@ export async function createBacklogItem(data: {
   priority?: string;
   url?: string;
 }) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await backlog.createBacklogItem(userId, data);
   revalidatePath("/backlog");
@@ -32,8 +31,7 @@ export async function updateBacklogItem(
     url?: string | null;
   },
 ) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await backlog.updateBacklogItem(userId, id, data);
   revalidatePath("/backlog");
@@ -45,8 +43,7 @@ export async function updateBacklogItemStatus(id: string, status: string) {
 }
 
 export async function deleteBacklogItem(id: string) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("認証が必要です");
+  const userId = await requireUserId();
 
   await backlog.deleteBacklogItem(userId, id);
   revalidatePath("/backlog");
