@@ -1,10 +1,13 @@
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, ne } from "drizzle-orm";
 import { db } from "@/db";
 import { tasks } from "@/db/schema";
 
 export async function getTasks(userId: string, filters?: { status?: string; priority?: string }) {
   const conditions = [eq(tasks.userId, userId)];
-  if (filters?.status && filters.status !== "all") {
+  // status 未指定/"active" は完了を除いた未完了タスクを表示する。"all" は全件。
+  if (!filters?.status || filters.status === "active") {
+    conditions.push(ne(tasks.status, "done"));
+  } else if (filters.status !== "all") {
     conditions.push(eq(tasks.status, filters.status));
   }
   if (filters?.priority && filters.priority !== "all") {

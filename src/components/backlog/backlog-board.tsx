@@ -34,7 +34,8 @@ export function BacklogBoard({ categories, items, activeCategory }: BacklogBoard
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<BacklogItemData | null>(null);
 
-  const statusFilter = searchParams.get("status") ?? "all";
+  // ステータスのデフォルトは「未完了」(完了を除く)。パラメータ無しで表現する。
+  const statusFilter = searchParams.get("status") ?? "active";
 
   const handleTabChange = (categoryId: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -44,7 +45,7 @@ export function BacklogBoard({ categories, items, activeCategory }: BacklogBoard
 
   const handleStatusFilter = (value: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (!value || value === "all") {
+    if (!value || value === "active") {
       params.delete("status");
     } else {
       params.set("status", value);
@@ -53,8 +54,9 @@ export function BacklogBoard({ categories, items, activeCategory }: BacklogBoard
   };
 
   const filteredItems = items.filter((item) => {
-    if (statusFilter !== "all" && item.status !== statusFilter) return false;
-    return true;
+    if (statusFilter === "all") return true;
+    if (statusFilter === "active") return item.status !== "completed";
+    return item.status === statusFilter;
   });
 
   const itemsByCategory = categories.reduce(
@@ -72,12 +74,13 @@ export function BacklogBoard({ categories, items, activeCategory }: BacklogBoard
           <Select
             value={statusFilter}
             onValueChange={handleStatusFilter}
-            items={{ all: "すべて", ...BACKLOG_STATUS }}
+            items={{ active: "未完了", all: "すべて", ...BACKLOG_STATUS }}
           >
             <SelectTrigger className="w-32">
               <SelectValue placeholder="ステータス" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="active">未完了</SelectItem>
               <SelectItem value="all">すべて</SelectItem>
               {Object.entries(BACKLOG_STATUS).map(([value, label]) => (
                 <SelectItem key={value} value={value}>
@@ -115,7 +118,7 @@ export function BacklogBoard({ categories, items, activeCategory }: BacklogBoard
             {(itemsByCategory[c.id] ?? []).length === 0 ? (
               <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
                 <p className="text-muted-foreground">
-                  {statusFilter !== "all"
+                  {statusFilter in BACKLOG_STATUS
                     ? `「${BACKLOG_STATUS[statusFilter as keyof typeof BACKLOG_STATUS]}」のアイテムはありません`
                     : `${c.name}のアイテムはありません`}
                 </p>

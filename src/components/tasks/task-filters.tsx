@@ -15,12 +15,13 @@ export function TaskFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentStatus = searchParams.get("status") ?? "all";
+  // ステータスのデフォルトは「未完了」(完了を除く)。パラメータ無しで表現する。
+  const currentStatus = searchParams.get("status") ?? "active";
   const currentPriority = searchParams.get("priority") ?? "all";
 
-  const updateFilter = (key: string, value: string | null) => {
+  const updateFilter = (key: string, value: string | null, defaultValue: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (!value || value === "all") {
+    if (!value || value === defaultValue) {
       params.delete(key);
     } else {
       params.set(key, value);
@@ -32,15 +33,15 @@ export function TaskFilters() {
     <div className="flex gap-3">
       <TaskStatusSelect
         value={currentStatus}
-        onValueChange={(v) => updateFilter("status", v)}
-        includeAll
+        onValueChange={(v) => updateFilter("status", v, "active")}
+        filterMode
         placeholder="ステータス"
         triggerClassName="w-32"
       />
 
       <Select
         value={currentPriority}
-        onValueChange={(v) => updateFilter("priority", v)}
+        onValueChange={(v) => updateFilter("priority", v, "all")}
         items={{ all: "すべて", ...TASK_PRIORITY }}
       >
         <SelectTrigger className="w-32">

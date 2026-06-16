@@ -32,8 +32,8 @@ interface TaskStatusSelectProps {
   /** フォーム送信（非制御）として使う場合 */
   name?: string;
   defaultValue?: string;
-  /** 「すべて」オプションを先頭に追加する（フィルタ用途） */
-  includeAll?: boolean;
+  /** フィルタ用途：「未完了」「すべて」オプションを先頭に追加する */
+  filterMode?: boolean;
   placeholder?: string;
   triggerClassName?: string;
 }
@@ -43,12 +43,12 @@ export function TaskStatusSelect({
   onValueChange,
   name,
   defaultValue,
-  includeAll = false,
+  filterMode = false,
   placeholder,
   triggerClassName,
 }: TaskStatusSelectProps) {
-  const items: Record<string, string> = includeAll
-    ? { all: "すべて", ...TASK_STATUS }
+  const items: Record<string, string> = filterMode
+    ? { active: "未完了", all: "すべて", ...TASK_STATUS }
     : { ...TASK_STATUS };
 
   return (
