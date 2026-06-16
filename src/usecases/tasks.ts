@@ -32,6 +32,29 @@ export async function getTasksByProject(userId: string, projectId: string) {
   });
 }
 
+type TaskRow = Awaited<ReturnType<typeof getTasks>>[number];
+
+export function mapTaskRow(t: TaskRow) {
+  return {
+    id: t.id,
+    title: t.title,
+    description: t.description,
+    status: t.status,
+    priority: t.priority,
+    dueDate: t.dueDate,
+    projectId: t.projectId,
+    project: t.project ? { name: t.project.name } : null,
+    subtasks: t.subtasks.toSorted((a, b) => a.position - b.position),
+    subtaskCount:
+      t.subtasks.length > 0
+        ? {
+            total: t.subtasks.length,
+            completed: t.subtasks.filter((s) => s.completed).length,
+          }
+        : undefined,
+  };
+}
+
 export async function createTask(
   userId: string,
   data: {

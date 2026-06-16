@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { requireUserIdOrRedirect } from "@/lib/auth";
 import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
 import { getActiveProjects, getProjectById, getProjectTaskStats } from "@/usecases/projects";
-import { getTasksByProject } from "@/usecases/tasks";
+import { getTasksByProject, mapTaskRow } from "@/usecases/tasks";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const userId = await requireUserIdOrRedirect();
@@ -24,24 +24,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   const progress = taskCount > 0 ? Math.round((doneCount / taskCount) * 100) : 0;
 
-  const mappedTasks = taskList.map((t) => ({
-    id: t.id,
-    title: t.title,
-    description: t.description,
-    status: t.status,
-    priority: t.priority,
-    dueDate: t.dueDate,
-    projectId: t.projectId,
-    project: t.project ? { name: t.project.name } : null,
-    subtasks: t.subtasks.toSorted((a, b) => a.position - b.position),
-    subtaskCount:
-      t.subtasks.length > 0
-        ? {
-            total: t.subtasks.length,
-            completed: t.subtasks.filter((s) => s.completed).length,
-          }
-        : undefined,
-  }));
+  const mappedTasks = taskList.map(mapTaskRow);
 
   return (
     <div className="space-y-6 p-6">
