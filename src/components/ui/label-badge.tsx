@@ -1,20 +1,20 @@
 import { Badge } from "@/components/ui/badge";
+import type { LabelOption } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 export function LabelBadge({
   value,
-  labelMap,
-  colorMap,
+  options,
   className,
 }: {
   value: string;
-  labelMap: Record<string, string>;
-  colorMap?: Record<string, string>;
+  options: Record<string, LabelOption>;
   className?: string;
 }) {
+  const option = options[value];
   return (
-    <Badge variant="outline" className={cn(colorMap?.[value], className)}>
-      {labelMap[value] ?? value}
+    <Badge variant="outline" className={cn(option?.color, className)}>
+      {option?.label ?? value}
     </Badge>
   );
 }

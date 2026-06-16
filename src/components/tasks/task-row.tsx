@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LabelBadge } from "@/components/ui/label-badge";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { TASK_PRIORITY, TASK_PRIORITY_COLOR } from "@/lib/constants";
+import { TASK_PRIORITY_OPTIONS } from "@/lib/constants";
 import { TaskStatusSelect } from "./task-status-select";
 
 export type TaskRow = {
@@ -94,7 +94,7 @@ export function TaskRowComponent({ task, onEdit }: TaskRowProps) {
         />
       </TableCell>
       <TableCell>
-        <LabelBadge value={task.priority} labelMap={TASK_PRIORITY} colorMap={TASK_PRIORITY_COLOR} />
+        <LabelBadge value={task.priority} options={TASK_PRIORITY_OPTIONS} />
       </TableCell>
       <TableCell className={isOverdue ? "text-red-600 font-medium" : ""}>
         {formatDate(task.dueDate)}

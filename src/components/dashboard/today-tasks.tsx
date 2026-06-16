@@ -4,9 +4,9 @@ import { AlertTriangle, CheckSquare, Square } from "lucide-react";
 import Link from "next/link";
 import { useTransition } from "react";
 import { updateTaskStatus } from "@/app/(app)/tasks/actions";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TASK_PRIORITY, TASK_PRIORITY_COLOR } from "@/lib/constants";
+import { LabelBadge } from "@/components/ui/label-badge";
+import { TASK_PRIORITY_OPTIONS } from "@/lib/constants";
 
 interface Task {
   id: string;
@@ -49,9 +49,7 @@ function TaskItem({ task }: { task: Task }) {
       {task.projectName && (
         <span className="text-xs text-muted-foreground">{task.projectName}</span>
       )}
-      <Badge variant="outline" className={`text-xs ${TASK_PRIORITY_COLOR[task.priority]}`}>
-        {TASK_PRIORITY[task.priority as keyof typeof TASK_PRIORITY]}
-      </Badge>
+      <LabelBadge value={task.priority} options={TASK_PRIORITY_OPTIONS} className="text-xs" />
     </div>
   );
 }

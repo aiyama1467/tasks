@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LabelBadge } from "@/components/ui/label-badge";
 import { Progress } from "@/components/ui/progress";
-import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
+import { PROJECT_STATUS_OPTIONS } from "@/lib/constants";
 import type { ProjectData } from "./project-form";
 
 const COLOR_MAP: Record<string, string> = {
@@ -55,11 +55,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
           <CardTitle className="text-base hover:underline">{project.name}</CardTitle>
         </Link>
         <div className="flex items-center gap-2">
-          <LabelBadge
-            value={project.status}
-            labelMap={PROJECT_STATUS}
-            colorMap={PROJECT_STATUS_COLOR}
-          />
+          <LabelBadge value={project.status} options={PROJECT_STATUS_OPTIONS} />
           <DropdownMenu>
             <DropdownMenuTrigger className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
               <MoreHorizontal className="h-4 w-4" />

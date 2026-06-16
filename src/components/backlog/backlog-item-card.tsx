@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BACKLOG_PRIORITY, BACKLOG_STATUS } from "@/lib/constants";
+import { BACKLOG_PRIORITY_OPTIONS, BACKLOG_STATUS } from "@/lib/constants";
 import type { BacklogItemData } from "./backlog-item-form";
 
 interface BacklogItemCardProps {
@@ -103,7 +103,11 @@ export function BacklogItemCard({ item, onEdit }: BacklogItemCardProps) {
               </SelectContent>
             </Select>
 
-            <LabelBadge value={item.priority} labelMap={BACKLOG_PRIORITY} className="text-xs" />
+            <LabelBadge
+              value={item.priority}
+              options={BACKLOG_PRIORITY_OPTIONS}
+              className="text-xs"
+            />
 
             {item.rating && (
               <span className="flex items-center gap-0.5 text-xs text-yellow-600">
