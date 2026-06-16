@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
 import { TaskTable } from "@/components/tasks/task-table";
-import { Badge } from "@/components/ui/badge";
+import { LabelBadge } from "@/components/ui/label-badge";
 import { Progress } from "@/components/ui/progress";
 import { requireUserIdOrRedirect } from "@/lib/auth";
 import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
@@ -43,9 +43,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         {project.description && <p className="text-muted-foreground">{project.description}</p>}
 
         <div className="flex items-center gap-4">
-          <Badge variant="outline" className={PROJECT_STATUS_COLOR[project.status]}>
-            {PROJECT_STATUS[project.status as keyof typeof PROJECT_STATUS]}
-          </Badge>
+          <LabelBadge
+            value={project.status}
+            labelMap={PROJECT_STATUS}
+            colorMap={PROJECT_STATUS_COLOR}
+          />
           <div className="flex flex-1 items-center gap-3">
             <Progress value={progress} className="h-2 max-w-xs" />
             <span className="text-sm text-muted-foreground">

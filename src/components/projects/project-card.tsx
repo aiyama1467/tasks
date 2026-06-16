@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { deleteProject } from "@/app/(app)/projects/actions";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -13,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LabelBadge } from "@/components/ui/label-badge";
 import { Progress } from "@/components/ui/progress";
 import { PROJECT_STATUS, PROJECT_STATUS_COLOR } from "@/lib/constants";
 import type { ProjectData } from "./project-form";
@@ -55,9 +55,11 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
           <CardTitle className="text-base hover:underline">{project.name}</CardTitle>
         </Link>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className={PROJECT_STATUS_COLOR[project.status]}>
-            {PROJECT_STATUS[project.status as keyof typeof PROJECT_STATUS]}
-          </Badge>
+          <LabelBadge
+            value={project.status}
+            labelMap={PROJECT_STATUS}
+            colorMap={PROJECT_STATUS_COLOR}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
               <MoreHorizontal className="h-4 w-4" />

@@ -4,7 +4,6 @@ import { ExternalLink, MoreHorizontal, Pencil, Star, Trash2 } from "lucide-react
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { deleteBacklogItem, updateBacklogItemStatus } from "@/app/(app)/backlog/actions";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -12,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LabelBadge } from "@/components/ui/label-badge";
 import {
   Select,
   SelectContent,
@@ -103,9 +103,7 @@ export function BacklogItemCard({ item, onEdit }: BacklogItemCardProps) {
               </SelectContent>
             </Select>
 
-            <Badge variant="outline" className="text-xs">
-              {BACKLOG_PRIORITY[item.priority as keyof typeof BACKLOG_PRIORITY]}
-            </Badge>
+            <LabelBadge value={item.priority} labelMap={BACKLOG_PRIORITY} className="text-xs" />
 
             {item.rating && (
               <span className="flex items-center gap-0.5 text-xs text-yellow-600">
