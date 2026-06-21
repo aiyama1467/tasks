@@ -121,7 +121,7 @@ export function SubtaskPanel({ taskId, initialSubtasks, onSubtasksChange }: Subt
                     handleCancelEdit();
                   }
                 }}
-                className="flex-1 text-sm bg-transparent border-b border-border outline-none"
+                className="flex-1 text-base sm:text-sm bg-transparent border-b border-border outline-none"
               />
             ) : (
               <button
@@ -155,7 +155,7 @@ export function SubtaskPanel({ taskId, initialSubtasks, onSubtasksChange }: Subt
             }
           }}
           placeholder="サブタスクを追加..."
-          className="h-8 text-sm"
+          className="h-8 text-base sm:text-sm"
           disabled={isPending}
         />
         <Button
