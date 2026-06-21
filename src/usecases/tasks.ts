@@ -24,9 +24,24 @@ export async function getTasks(userId: string, filters?: { status?: string; prio
   });
 }
 
-export async function getTasksByProject(userId: string, projectId: string) {
+export async function getTasksByProject(
+  userId: string,
+  projectId: string,
+  filters?: { status?: string; priority?: string },
+) {
+  const conditions = [eq(tasks.userId, userId), eq(tasks.projectId, projectId)];
+  // status 未指定/"active" は完了を除いた未完了タスクを表示する。"all" は全件。
+  if (!filters?.status || filters.status === "active") {
+    conditions.push(ne(tasks.status, "done"));
+  } else if (filters.status !== "all") {
+    conditions.push(eq(tasks.status, filters.status));
+  }
+  if (filters?.priority && filters.priority !== "all") {
+    conditions.push(eq(tasks.priority, filters.priority));
+  }
+
   return db.query.tasks.findMany({
-    where: and(eq(tasks.userId, userId), eq(tasks.projectId, projectId)),
+    where: and(...conditions),
     with: {
       project: { columns: { name: true } },
       subtasks: { columns: { id: true, title: true, completed: true, position: true } },

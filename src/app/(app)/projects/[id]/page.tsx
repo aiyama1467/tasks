@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
+import { TaskFilters } from "@/components/tasks/task-filters";
 import { TaskTable } from "@/components/tasks/task-table";
 import { LabelBadge } from "@/components/ui/label-badge";
 import { Progress } from "@/components/ui/progress";
@@ -8,17 +9,24 @@ import { PROJECT_STATUS_OPTIONS } from "@/lib/constants";
 import { getActiveProjects, getProjectById, getProjectTaskStats } from "@/usecases/projects";
 import { getTasksByProject, mapTaskRow } from "@/usecases/tasks";
 
-export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProjectDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ status?: string; priority?: string }>;
+}) {
   const userId = await requireUserIdOrRedirect();
 
   const { id } = await params;
+  const { status, priority } = await searchParams;
 
   const project = await getProjectById(userId, id);
   if (!project) notFound();
 
   const [{ taskCount, doneCount }, taskList, allProjects] = await Promise.all([
     getProjectTaskStats(userId, id),
-    getTasksByProject(userId, id),
+    getTasksByProject(userId, id, { status, priority }),
     getActiveProjects(userId),
   ]);
 
@@ -54,7 +62,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       </div>
 
       <div className="space-y-3">
-        <h2 className="text-lg font-semibold">タスク</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">タスク</h2>
+          <TaskFilters />
+        </div>
         <TaskTable tasks={mappedTasks} projects={allProjects} />
       </div>
     </div>
