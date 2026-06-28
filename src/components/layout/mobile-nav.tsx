@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckSquare, FolderKanban, LayoutDashboard, Library } from "lucide-react";
+import { CheckSquare, FolderKanban, LayoutDashboard, Library, Rss } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ const navItems = [
   { href: "/projects", label: "プロジェクト", icon: FolderKanban },
   { href: "/tasks", label: "タスク", icon: CheckSquare },
   { href: "/backlog", label: "バックログ", icon: Library },
+  { href: "/feeds", label: "フィード", icon: Rss },
 ];
 
 export function MobileNav() {

@@ -43,3 +43,13 @@ export const TASK_PRIORITY = labels(TASK_PRIORITY_OPTIONS);
 export const PROJECT_STATUS = labels(PROJECT_STATUS_OPTIONS);
 export const BACKLOG_STATUS = labels(BACKLOG_STATUS_OPTIONS);
 export const BACKLOG_PRIORITY = labels(BACKLOG_PRIORITY_OPTIONS);
+
+export const FEED_SOURCE_TYPE = {
+  rss: "RSS",
+  twitter_rss: "Twitter (RSS)",
+} as const;
+
+export const FEED_SOURCE_TYPE_COLOR: Record<string, string> = {
+  rss: "bg-orange-100 text-orange-700",
+  twitter_rss: "bg-sky-100 text-sky-700",
+};

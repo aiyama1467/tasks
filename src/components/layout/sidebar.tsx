@@ -1,7 +1,7 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { CheckSquare, FolderKanban, LayoutDashboard, Library } from "lucide-react";
+import { CheckSquare, FolderKanban, LayoutDashboard, Library, Rss } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -12,6 +12,7 @@ const navItems = [
   { href: "/projects", label: "プロジェクト", icon: FolderKanban },
   { href: "/tasks", label: "タスク", icon: CheckSquare },
   { href: "/backlog", label: "バックログ", icon: Library },
+  { href: "/feeds", label: "フィード", icon: Rss },
 ];
 
 export function Sidebar() {

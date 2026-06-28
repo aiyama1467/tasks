@@ -1,6 +1,6 @@
-import { and, count, eq, gte, lt, ne } from "drizzle-orm";
+import { and, count, desc, eq, gte, lt, ne } from "drizzle-orm";
 import { db } from "@/db";
-import { backlogItems, projects, tasks } from "@/db/schema";
+import { backlogItems, feedItems, projects, tasks } from "@/db/schema";
 
 export async function getDashboardData(userId: string) {
   const today = new Date().toISOString().split("T")[0];
@@ -17,6 +17,8 @@ export async function getDashboardData(userId: string) {
     activeProjectList,
     inProgressBacklogItems,
     overdueTaskCount,
+    recentUnreadFeedItems,
+    unreadFeedCount,
   ] = await Promise.all([
     db.query.tasks.findMany({
       where: and(eq(tasks.userId, userId), eq(tasks.dueDate, today), ne(tasks.status, "done")),
@@ -56,6 +58,16 @@ export async function getDashboardData(userId: string) {
       .select({ value: count() })
       .from(tasks)
       .where(and(eq(tasks.userId, userId), lt(tasks.dueDate, today), ne(tasks.status, "done"))),
+    db.query.feedItems.findMany({
+      where: and(eq(feedItems.userId, userId), eq(feedItems.isRead, false)),
+      with: { source: { columns: { name: true, sourceType: true } } },
+      orderBy: [desc(feedItems.publishedAt), desc(feedItems.createdAt)],
+      limit: 5,
+    }),
+    db
+      .select({ value: count() })
+      .from(feedItems)
+      .where(and(eq(feedItems.userId, userId), eq(feedItems.isRead, false))),
   ]);
 
   const activeProjects = await Promise.all(
@@ -90,5 +102,7 @@ export async function getDashboardData(userId: string) {
     activeProjects,
     inProgressBacklogItems,
     overdueTaskCount: overdueTaskCount[0].value,
+    recentUnreadFeedItems,
+    unreadFeedCount: unreadFeedCount[0].value,
   };
 }

@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.9439 0.0040 286.3228);
+  --background: oklch(0.9439 0.004 286.3228);
   --foreground: oklch(0.2103 0.0059 285.8852);
   --card: oklch(0.9612 0 0);
   --card-foreground: oklch(0.2103 0.0059 285.8852);
@@ -25,11 +25,11 @@
   --input: oklch(0.8631 0.0109 286.1682);
   --ring: oklch(0.4883 0.1633 281.8599);
   --chart-1: oklch(0.4883 0.1633 281.8599);
-  --chart-2: oklch(0.6419 0.0729 291.6910);
+  --chart-2: oklch(0.6419 0.0729 291.691);
   --chart-3: oklch(0.7295 0.0618 275.3285);
   --chart-4: oklch(0.7904 0.0346 300.7868);
   --chart-5: oklch(0.8395 0.0207 308.1877);
-  --sidebar: oklch(0.9439 0.0040 286.3228);
+  --sidebar: oklch(0.9439 0.004 286.3228);
   --sidebar-foreground: oklch(0.2103 0.0059 285.8852);
   --sidebar-primary: oklch(0.4883 0.1633 281.8599);
   --sidebar-primary-foreground: oklch(0.9612 0 0);
@@ -43,11 +43,11 @@
   --radius: 0.5rem;
   --shadow-2xs: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.05);
   --shadow-xs: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.05);
-  --shadow-sm: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.10), 0 1px 2px -1px hsl(0 0 0 / 0.10);
-  --shadow: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.10), 0 1px 2px -1px hsl(0 0 0 / 0.10);
-  --shadow-md: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.10), 0 2px 4px -1px hsl(0 0 0 / 0.10);
-  --shadow-lg: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.10), 0 4px 6px -1px hsl(0 0 0 / 0.10);
-  --shadow-xl: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.10), 0 8px 10px -1px hsl(0 0 0 / 0.10);
+  --shadow-sm: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.1), 0 1px 2px -1px hsl(0 0 0 / 0.1);
+  --shadow: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.1), 0 1px 2px -1px hsl(0 0 0 / 0.1);
+  --shadow-md: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.1), 0 2px 4px -1px hsl(0 0 0 / 0.1);
+  --shadow-lg: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.1), 0 4px 6px -1px hsl(0 0 0 / 0.1);
+  --shadow-xl: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.1), 0 8px 10px -1px hsl(0 0 0 / 0.1);
   --shadow-2xl: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.25);
   --tracking-normal: normal;
   --spacing: 0.25rem;
@@ -56,9 +56,9 @@
 .dark {
   --background: oklch(0.2306 0.0134 291.8622);
   --foreground: oklch(0.8631 0.0109 286.1682);
-  --card: oklch(0.2080 0.0099 294.6949);
+  --card: oklch(0.208 0.0099 294.6949);
   --card-foreground: oklch(0.8631 0.0109 286.1682);
-  --popover: oklch(0.2080 0.0099 294.6949);
+  --popover: oklch(0.208 0.0099 294.6949);
   --popover-foreground: oklch(0.8631 0.0109 286.1682);
   --primary: oklch(0.4883 0.1633 281.8599);
   --primary-foreground: oklch(0.9612 0 0);
@@ -74,11 +74,11 @@
   --input: oklch(0.3676 0.0239 291.7272);
   --ring: oklch(0.4883 0.1633 281.8599);
   --chart-1: oklch(0.4883 0.1633 281.8599);
-  --chart-2: oklch(0.6419 0.0729 291.6910);
+  --chart-2: oklch(0.6419 0.0729 291.691);
   --chart-3: oklch(0.7295 0.0618 275.3285);
   --chart-4: oklch(0.7904 0.0346 300.7868);
   --chart-5: oklch(0.8395 0.0207 308.1877);
-  --sidebar: oklch(0.2080 0.0099 294.6949);
+  --sidebar: oklch(0.208 0.0099 294.6949);
   --sidebar-foreground: oklch(0.8631 0.0109 286.1682);
   --sidebar-primary: oklch(0.4883 0.1633 281.8599);
   --sidebar-primary-foreground: oklch(0.9612 0 0);
@@ -92,11 +92,11 @@
   --radius: 0.5rem;
   --shadow-2xs: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.15);
   --shadow-xs: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.15);
-  --shadow-sm: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.30), 0 1px 2px -1px hsl(0 0 0 / 0.30);
-  --shadow: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.30), 0 1px 2px -1px hsl(0 0 0 / 0.30);
-  --shadow-md: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.30), 0 2px 4px -1px hsl(0 0 0 / 0.30);
-  --shadow-lg: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.30), 0 4px 6px -1px hsl(0 0 0 / 0.30);
-  --shadow-xl: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.30), 0 8px 10px -1px hsl(0 0 0 / 0.30);
+  --shadow-sm: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.3), 0 1px 2px -1px hsl(0 0 0 / 0.3);
+  --shadow: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.3), 0 1px 2px -1px hsl(0 0 0 / 0.3);
+  --shadow-md: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.3), 0 2px 4px -1px hsl(0 0 0 / 0.3);
+  --shadow-lg: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.3), 0 4px 6px -1px hsl(0 0 0 / 0.3);
+  --shadow-xl: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.3), 0 8px 10px -1px hsl(0 0 0 / 0.3);
   --shadow-2xl: 0 0.125rem 0.5rem 0 hsl(0 0 0 / 0.75);
 }
 

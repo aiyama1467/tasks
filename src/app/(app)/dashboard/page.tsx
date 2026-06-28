@@ -1,5 +1,6 @@
 import { ActiveProjects } from "@/components/dashboard/active-projects";
 import { InProgressBacklog } from "@/components/dashboard/in-progress-backlog";
+import { RecentFeeds } from "@/components/dashboard/recent-feeds";
 import { StatsOverview } from "@/components/dashboard/stats-overview";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
 import { requireUserIdOrRedirect } from "@/lib/auth";
@@ -16,6 +17,7 @@ export default async function DashboardPage() {
     activeProjects,
     inProgressBacklogItems,
     overdueTaskCount,
+    recentUnreadFeedItems,
   } = await getDashboardData(userId);
 
   const mapTask = (t: (typeof todayTasks)[number]) => ({
@@ -50,6 +52,17 @@ export default async function DashboardPage() {
           title: item.title,
           categoryName: item.category.name,
           url: item.url,
+        }))}
+      />
+
+      <RecentFeeds
+        items={recentUnreadFeedItems.map((item) => ({
+          id: item.id,
+          title: item.title,
+          url: item.url,
+          publishedAt: item.publishedAt?.toISOString() ?? null,
+          sourceName: item.source.name,
+          sourceType: item.source.sourceType,
         }))}
       />
     </div>
