@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "tasks": {
+      "type": "http",
+      "url": "http://localhost:3000/api/mcp"
+    },
+    "clerk": {
+      "url": "https://mcp.clerk.com/mcp"
+    }
+  }
+}

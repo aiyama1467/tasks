@@ -3,9 +3,15 @@ import { auth } from "@clerk/nextjs/server";
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { registerTools } from "@/lib/mcp/tools";
 
-const handler = createMcpHandler((server) => {
-  registerTools(server);
-});
+const handler = createMcpHandler(
+  (server) => {
+    registerTools(server);
+  },
+  {},
+  // mcp-handler はリクエストパスを basePath + "/mcp" と照合する。
+  // このルートは /api/mcp にあるので basePath を "/api" にして一致させる。
+  { basePath: "/api" },
+);
 
 const authHandler = withMcpAuth(
   handler,
