@@ -4,33 +4,14 @@ import { getDashboardData } from "@/usecases/dashboard";
 import { getFeedItems } from "@/usecases/feeds";
 import { getProjectById, getProjects, getProjectTaskStats } from "@/usecases/projects";
 import { getTaskById, getTasks, getTasksByProject, mapTaskRow } from "@/usecases/tasks";
+import { withUser } from "./util";
+import { registerWriteTools } from "./write-tools";
 
 /**
- * MCP 経由で公開するツール。すべて読み取り専用。
+ * MCP 経由で公開する読み取りツール。
  * userId は必ず検証済みトークン(authInfo.extra.userId)から渡し、
  * ツール引数からは受け取らない(他ユーザーのデータを覗けないようにするため)。
  */
-
-type AuthCtx = { authInfo?: { extra?: { userId?: string } } };
-
-function ok(data: unknown) {
-  return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
-}
-
-// userId をトークンから取り出して注入する薄いラッパ。
-// 各ツールは userId を引数から受け取らず、ここで渡されたものだけを使う。
-function withUser<A>(fn: (userId: string, args: A) => Promise<unknown>) {
-  return async (args: A, { authInfo }: AuthCtx) => {
-    const userId = authInfo?.extra?.userId;
-    if (!userId) {
-      return {
-        content: [{ type: "text" as const, text: "Unauthorized: no user in token." }],
-        isError: true,
-      };
-    }
-    return ok(await fn(userId, args));
-  };
-}
 
 type FeedRow = Awaited<ReturnType<typeof getFeedItems>>[number];
 function mapFeedItem(item: FeedRow) {
@@ -224,4 +205,6 @@ export function registerTools(server: any) {
       };
     }),
   );
+
+  registerWriteTools(server);
 }

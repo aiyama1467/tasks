@@ -37,17 +37,21 @@ export async function createBacklogItem(
   const now = new Date().toISOString().split("T")[0];
   const status = data.status || "not_started";
 
-  await db.insert(backlogItems).values({
-    userId,
-    title: data.title,
-    description: data.description || null,
-    categoryId: data.categoryId,
-    status,
-    priority: data.priority || "medium",
-    url: data.url || null,
-    startedAt: status === "in_progress" ? now : null,
-    completedAt: status === "completed" ? now : null,
-  });
+  const [created] = await db
+    .insert(backlogItems)
+    .values({
+      userId,
+      title: data.title,
+      description: data.description || null,
+      categoryId: data.categoryId,
+      status,
+      priority: data.priority || "medium",
+      url: data.url || null,
+      startedAt: status === "in_progress" ? now : null,
+      completedAt: status === "completed" ? now : null,
+    })
+    .returning({ id: backlogItems.id });
+  return created;
 }
 
 export async function updateBacklogItem(

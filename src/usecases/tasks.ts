@@ -94,15 +94,19 @@ export async function createTask(
     projectId?: string;
   },
 ) {
-  await db.insert(tasks).values({
-    userId,
-    title: data.title,
-    description: data.description || null,
-    status: data.status || "todo",
-    priority: data.priority || "medium",
-    dueDate: data.dueDate || null,
-    projectId: data.projectId || null,
-  });
+  const [created] = await db
+    .insert(tasks)
+    .values({
+      userId,
+      title: data.title,
+      description: data.description || null,
+      status: data.status || "todo",
+      priority: data.priority || "medium",
+      dueDate: data.dueDate || null,
+      projectId: data.projectId || null,
+    })
+    .returning({ id: tasks.id });
+  return created;
 }
 
 export async function updateTask(

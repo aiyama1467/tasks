@@ -40,13 +40,17 @@ export async function createProject(
   userId: string,
   data: { name: string; description?: string; status?: string; color?: string },
 ) {
-  await db.insert(projects).values({
-    userId,
-    name: data.name,
-    description: data.description || null,
-    status: data.status || "active",
-    color: data.color || null,
-  });
+  const [created] = await db
+    .insert(projects)
+    .values({
+      userId,
+      name: data.name,
+      description: data.description || null,
+      status: data.status || "active",
+      color: data.color || null,
+    })
+    .returning({ id: projects.id });
+  return created;
 }
 
 export async function updateProject(
