@@ -19,7 +19,7 @@ export async function getDashboardData(userId: string) {
     overdueTaskCount,
     recentUnreadFeedItems,
     unreadFeedCount,
-  ] = await Promise.all([
+  ] = await db.batch([
     db.query.tasks.findMany({
       where: and(eq(tasks.userId, userId), eq(tasks.dueDate, today), ne(tasks.status, "done")),
       with: { project: true },
@@ -70,29 +70,33 @@ export async function getDashboardData(userId: string) {
       .where(and(eq(feedItems.userId, userId), eq(feedItems.isRead, false))),
   ]);
 
-  const activeProjects = await Promise.all(
-    activeProjectList.map(async (project) => {
-      const [taskCountResult] = await db
-        .select({ value: count() })
-        .from(tasks)
-        .where(and(eq(tasks.userId, userId), eq(tasks.projectId, project.id)));
+  // Batch all per-project count queries into a single round-trip to avoid a
+  // burst of concurrent neon-http connections (each query opens its own).
+  const projectCountQueries = activeProjectList.flatMap((project) => [
+    db
+      .select({ value: count() })
+      .from(tasks)
+      .where(and(eq(tasks.userId, userId), eq(tasks.projectId, project.id))),
+    db
+      .select({ value: count() })
+      .from(tasks)
+      .where(
+        and(eq(tasks.userId, userId), eq(tasks.projectId, project.id), eq(tasks.status, "done")),
+      ),
+  ]);
 
-      const [doneCountResult] = await db
-        .select({ value: count() })
-        .from(tasks)
-        .where(
-          and(eq(tasks.userId, userId), eq(tasks.projectId, project.id), eq(tasks.status, "done")),
-        );
+  const projectCounts =
+    projectCountQueries.length > 0
+      ? await db.batch(projectCountQueries as [(typeof projectCountQueries)[number]])
+      : [];
 
-      return {
-        id: project.id,
-        name: project.name,
-        color: project.color,
-        taskCount: taskCountResult.value,
-        doneCount: doneCountResult.value,
-      };
-    }),
-  );
+  const activeProjects = activeProjectList.map((project, i) => ({
+    id: project.id,
+    name: project.name,
+    color: project.color,
+    taskCount: projectCounts[i * 2][0].value,
+    doneCount: projectCounts[i * 2 + 1][0].value,
+  }));
 
   return {
     todayTasks,
