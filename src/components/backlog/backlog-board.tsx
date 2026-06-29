@@ -4,17 +4,11 @@ import { Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BACKLOG_STATUS } from "@/lib/constants";
 import { BacklogItemCard } from "./backlog-item-card";
 import { type BacklogItemData, BacklogItemForm } from "./backlog-item-form";
+import { BacklogStatusSelect } from "./backlog-status-select";
 
 interface Category {
   id: string;
@@ -71,24 +65,13 @@ export function BacklogBoard({ categories, items, activeCategory }: BacklogBoard
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Select
+          <BacklogStatusSelect
+            filterMode
             value={statusFilter}
             onValueChange={handleStatusFilter}
-            items={{ active: "未完了", all: "すべて", ...BACKLOG_STATUS }}
-          >
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="ステータス" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="active">未完了</SelectItem>
-              <SelectItem value="all">すべて</SelectItem>
-              {Object.entries(BACKLOG_STATUS).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            placeholder="ステータス"
+            triggerClassName="w-32"
+          />
         </div>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="mr-2 h-4 w-4" />

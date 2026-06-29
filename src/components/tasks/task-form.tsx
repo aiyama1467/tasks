@@ -6,18 +6,12 @@ import { createTask, updateTask } from "@/app/(app)/tasks/actions";
 import type { SubtaskRow } from "@/app/(app)/tasks/subtask-actions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { EnumSelect } from "@/components/ui/enum-select";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { TASK_PRIORITY } from "@/lib/constants";
 import { SubtaskPanel } from "./subtask-panel";
+import { TaskPrioritySelect } from "./task-priority-select";
 import type { TaskRow } from "./task-row";
 import { TaskStatusSelect } from "./task-status-select";
 
@@ -115,22 +109,7 @@ export function TaskForm({
               <label htmlFor="priority" className="text-sm font-medium">
                 優先度
               </label>
-              <Select
-                name="priority"
-                defaultValue={task?.priority ?? "medium"}
-                items={TASK_PRIORITY}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(TASK_PRIORITY).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <TaskPrioritySelect name="priority" defaultValue={task?.priority ?? "medium"} />
             </div>
           </div>
 
@@ -146,26 +125,11 @@ export function TaskForm({
               <label htmlFor="projectId" className="text-sm font-medium">
                 プロジェクト
               </label>
-              <Select
+              <EnumSelect
                 name="projectId"
                 defaultValue={task?.projectId ?? "none"}
-                items={[
-                  { value: "none", label: "なし" },
-                  ...projects.map((p) => ({ value: p.id, label: p.name })),
-                ]}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">なし</SelectItem>
-                  {projects.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                map={{ none: "なし", ...Object.fromEntries(projects.map((p) => [p.id, p.name])) }}
+              />
             </div>
           </div>
 

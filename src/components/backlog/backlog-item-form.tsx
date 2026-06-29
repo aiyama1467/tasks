@@ -5,16 +5,11 @@ import { toast } from "sonner";
 import { createBacklogItem, updateBacklogItem } from "@/app/(app)/backlog/actions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { EnumSelect } from "@/components/ui/enum-select";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { BACKLOG_PRIORITY, BACKLOG_STATUS } from "@/lib/constants";
+import { BACKLOG_PRIORITY } from "@/lib/constants";
+import { BacklogStatusSelect } from "./backlog-status-select";
 
 export type BacklogItemData = {
   id: string;
@@ -115,44 +110,18 @@ export function BacklogItemForm({
               <label htmlFor="categoryId" className="text-sm font-medium">
                 カテゴリ
               </label>
-              <Select
+              <EnumSelect
                 name="categoryId"
                 defaultValue={item?.categoryId ?? defaultCategoryId ?? categories[0]?.id}
-                items={categories.map((c) => ({ value: c.id, label: c.name }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                map={Object.fromEntries(categories.map((c) => [c.id, c.name]))}
+              />
             </div>
 
             <div className="space-y-2">
               <label htmlFor="status" className="text-sm font-medium">
                 ステータス
               </label>
-              <Select
-                name="status"
-                defaultValue={item?.status ?? "not_started"}
-                items={BACKLOG_STATUS}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(BACKLOG_STATUS).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <BacklogStatusSelect name="status" defaultValue={item?.status ?? "not_started"} />
             </div>
           </div>
 
@@ -161,22 +130,11 @@ export function BacklogItemForm({
               <label htmlFor="priority" className="text-sm font-medium">
                 優先度
               </label>
-              <Select
+              <EnumSelect
+                map={BACKLOG_PRIORITY}
                 name="priority"
                 defaultValue={item?.priority ?? "medium"}
-                items={BACKLOG_PRIORITY}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(BACKLOG_PRIORITY).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              />
             </div>
 
             {isEditing && item?.status === "completed" && (
@@ -184,18 +142,14 @@ export function BacklogItemForm({
                 <label htmlFor="rating" className="text-sm font-medium">
                   評価 (1-5)
                 </label>
-                <Select name="rating" defaultValue={item?.rating?.toString() ?? ""}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="未評価" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[1, 2, 3, 4, 5].map((n) => (
-                      <SelectItem key={n} value={n.toString()}>
-                        {"★".repeat(n)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <EnumSelect
+                  name="rating"
+                  defaultValue={item?.rating?.toString() ?? ""}
+                  placeholder="未評価"
+                  map={Object.fromEntries(
+                    [1, 2, 3, 4, 5].map((n) => [n.toString(), "★".repeat(n)]),
+                  )}
+                />
               </div>
             )}
           </div>

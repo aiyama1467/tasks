@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { createProject, updateProject } from "@/app/(app)/projects/actions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { EnumSelect } from "@/components/ui/enum-select";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -103,22 +104,11 @@ export function ProjectForm({ open, onOpenChange, project }: ProjectFormProps) {
               <label htmlFor="status" className="text-sm font-medium">
                 ステータス
               </label>
-              <Select
+              <EnumSelect
+                map={PROJECT_STATUS}
                 name="status"
                 defaultValue={project?.status ?? "active"}
-                items={PROJECT_STATUS}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(PROJECT_STATUS).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              />
             </div>
 
             <div className="space-y-2">

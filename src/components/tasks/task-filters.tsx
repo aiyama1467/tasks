@@ -1,14 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { TASK_PRIORITY } from "@/lib/constants";
+import { TaskPrioritySelect } from "./task-priority-select";
 import { TaskStatusSelect } from "./task-status-select";
 
 export function TaskFilters() {
@@ -41,23 +34,13 @@ export function TaskFilters() {
         triggerClassName="w-32"
       />
 
-      <Select
+      <TaskPrioritySelect
+        filterMode
         value={currentPriority}
         onValueChange={(v) => updateFilter("priority", v, "all")}
-        items={{ all: "すべて", ...TASK_PRIORITY }}
-      >
-        <SelectTrigger className="w-32">
-          <SelectValue placeholder="優先度" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">すべて</SelectItem>
-          {Object.entries(TASK_PRIORITY).map(([value, label]) => (
-            <SelectItem key={value} value={value}>
-              {label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        placeholder="優先度"
+        triggerClassName="w-32"
+      />
     </div>
   );
 }

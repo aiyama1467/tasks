@@ -12,15 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LabelBadge } from "@/components/ui/label-badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { BACKLOG_PRIORITY_OPTIONS, BACKLOG_STATUS } from "@/lib/constants";
+import { BACKLOG_PRIORITY_OPTIONS } from "@/lib/constants";
 import type { BacklogItemData } from "./backlog-item-form";
+import { BacklogStatusSelect } from "./backlog-status-select";
 
 interface BacklogItemCardProps {
   item: BacklogItemData;
@@ -90,18 +84,11 @@ export function BacklogItemCard({ item, onEdit }: BacklogItemCardProps) {
           )}
 
           <div className="flex items-center gap-2">
-            <Select value={item.status} onValueChange={handleStatusChange} items={BACKLOG_STATUS}>
-              <SelectTrigger className="h-7 w-24 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(BACKLOG_STATUS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <BacklogStatusSelect
+              value={item.status}
+              onValueChange={handleStatusChange}
+              triggerClassName="h-7 w-24 text-xs"
+            />
 
             <LabelBadge
               value={item.priority}
