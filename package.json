@@ -39,6 +39,10 @@
       "esbuild",
       "lefthook",
       "sharp"
+    ],
+    "ignoredBuiltDependencies": [
+      "@clerk/shared",
+      "msw"
     ]
   },
   "devDependencies": {
