@@ -50,6 +50,16 @@ export async function getTasksByProject(
   });
 }
 
+export async function getTaskById(userId: string, id: string) {
+  return db.query.tasks.findFirst({
+    where: and(eq(tasks.id, id), eq(tasks.userId, userId)),
+    with: {
+      project: { columns: { name: true } },
+      subtasks: { columns: { id: true, title: true, completed: true, position: true } },
+    },
+  });
+}
+
 type TaskRow = Awaited<ReturnType<typeof getTasks>>[number];
 
 export function mapTaskRow(t: TaskRow) {
