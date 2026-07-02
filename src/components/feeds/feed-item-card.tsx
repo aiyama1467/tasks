@@ -53,6 +53,13 @@ export function FeedItemCard({ item, onConvertToTask, onConvertToBacklog }: Feed
     });
   };
 
+  const handleMarkReadClick = () => {
+    startTransition(async () => {
+      await markItemRead(item.id);
+      toast.success("既読にしました");
+    });
+  };
+
   const handleToggleSaved = () => {
     startTransition(async () => {
       await toggleItemSaved(item.id);
@@ -105,6 +112,16 @@ export function FeedItemCard({ item, onConvertToTask, onConvertToBacklog }: Feed
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
+            {!item.isRead && (
+              <button
+                type="button"
+                onClick={handleMarkReadClick}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent"
+                title="既読にする"
+              >
+                <CheckCircle className="h-4 w-4" />
+              </button>
+            )}
             <button
               type="button"
               onClick={handleToggleSaved}
@@ -118,31 +135,23 @@ export function FeedItemCard({ item, onConvertToTask, onConvertToBacklog }: Feed
               )}
             </button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
-                <MoreHorizontal className="h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {!item.isRead && (
-                  <DropdownMenuItem onClick={handleMarkRead}>
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    既読にする
+            {!isConverted && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
+                  <MoreHorizontal className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => onConvertToTask(item)}>
+                    <ListTodo className="mr-2 h-4 w-4" />
+                    タスクに変換
                   </DropdownMenuItem>
-                )}
-                {!isConverted && (
-                  <>
-                    <DropdownMenuItem onClick={() => onConvertToTask(item)}>
-                      <ListTodo className="mr-2 h-4 w-4" />
-                      タスクに変換
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onConvertToBacklog(item)}>
-                      <Bookmark className="mr-2 h-4 w-4" />
-                      バックログに変換
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuItem onClick={() => onConvertToBacklog(item)}>
+                    <Bookmark className="mr-2 h-4 w-4" />
+                    バックログに変換
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </CardContent>
