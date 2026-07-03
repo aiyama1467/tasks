@@ -6,6 +6,9 @@ const isPublicRoute = createRouteMatcher([
   // MCP は session ではなく OAuth トークンで認証する。auth.protect() による
   // サインインへのリダイレクトを避け、ハンドラ側(withMcpAuth)に 401/PRM を任せる。
   "/api/mcp(.*)",
+  // Vercel Cron はセッションを持たない。Clerk のリダイレクトを避け、
+  // ハンドラ側で CRON_SECRET を検証する。
+  "/api/cron(.*)",
   "/.well-known(.*)",
 ]);
 

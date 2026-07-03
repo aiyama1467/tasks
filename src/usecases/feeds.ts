@@ -137,6 +137,23 @@ export async function refreshFeedSource(userId: string, sourceId: string) {
   }
 }
 
+export async function refreshAllUsersFeeds() {
+  const rows = await db
+    .selectDistinct({ userId: feedSources.userId })
+    .from(feedSources)
+    .where(eq(feedSources.enabled, true));
+
+  // TODO: ユーザーを逐次で処理しているため、ユーザー数が増えると cron の maxDuration(60s)
+  // を超える恐れがある。バッチ分割（cron を複数エンドポイントに分ける / offset で分割）や
+  // キュー投入（Vercel Queue 等）への移行を検討する。
+  const summary: { userId: string; results: Awaited<ReturnType<typeof refreshAllFeeds>> }[] = [];
+  for (const { userId } of rows) {
+    const results = await refreshAllFeeds(userId);
+    summary.push({ userId, results });
+  }
+  return summary;
+}
+
 export async function refreshAllFeeds(userId: string) {
   const sources = await db.query.feedSources.findMany({
     where: and(eq(feedSources.userId, userId), eq(feedSources.enabled, true)),
@@ -144,6 +161,9 @@ export async function refreshAllFeeds(userId: string) {
 
   const results: { sourceId: string; name: string; error?: string }[] = [];
 
+  // TODO: ソースを1件ずつ逐次取得している。各 fetchFeed は最大10秒待つため、
+  // ソース数が多いと合計時間が伸びる。Promise.allSettled で並列化すれば短縮できる
+  // （ただし外部サーバーへの同時リクエスト数は絞る想定でチャンク並列が無難）。
   for (const source of sources) {
     try {
       await refreshFeedSource(userId, source.id);
