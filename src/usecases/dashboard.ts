@@ -16,7 +16,6 @@ export async function getDashboardData(userId: string) {
     completedThisWeek,
     activeProjectList,
     inProgressBacklogItems,
-    overdueTaskCount,
     recentUnreadFeedItems,
     unreadFeedCount,
   ] = await db.batch([
@@ -54,10 +53,6 @@ export async function getDashboardData(userId: string) {
       with: { category: true },
       orderBy: (backlogItems, { desc }) => [desc(backlogItems.updatedAt)],
     }),
-    db
-      .select({ value: count() })
-      .from(tasks)
-      .where(and(eq(tasks.userId, userId), lt(tasks.dueDate, today), ne(tasks.status, "done"))),
     db.query.feedItems.findMany({
       where: and(eq(feedItems.userId, userId), eq(feedItems.isRead, false)),
       with: { source: { columns: { name: true, sourceType: true } } },
@@ -105,7 +100,7 @@ export async function getDashboardData(userId: string) {
     completedThisWeek: completedThisWeek[0].value,
     activeProjects,
     inProgressBacklogItems,
-    overdueTaskCount: overdueTaskCount[0].value,
+    overdueTaskCount: overdueTasks.length,
     recentUnreadFeedItems,
     unreadFeedCount: unreadFeedCount[0].value,
   };
