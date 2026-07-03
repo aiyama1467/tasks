@@ -1,4 +1,4 @@
-import { and, count, desc, eq, gte, lt, ne } from "drizzle-orm";
+import { and, count, desc, eq, gte, inArray, lt, ne, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { backlogItems, feedItems, projects, tasks } from "@/db/schema";
 
@@ -70,32 +70,32 @@ export async function getDashboardData(userId: string) {
       .where(and(eq(feedItems.userId, userId), eq(feedItems.isRead, false))),
   ]);
 
-  // Batch all per-project count queries into a single round-trip to avoid a
-  // burst of concurrent neon-http connections (each query opens its own).
-  const projectCountQueries = activeProjectList.flatMap((project) => [
-    db
-      .select({ value: count() })
-      .from(tasks)
-      .where(and(eq(tasks.userId, userId), eq(tasks.projectId, project.id))),
-    db
-      .select({ value: count() })
-      .from(tasks)
-      .where(
-        and(eq(tasks.userId, userId), eq(tasks.projectId, project.id), eq(tasks.status, "done")),
-      ),
-  ]);
+  // Aggregate per-project task/done counts in a single grouped query instead of
+  // issuing two count queries per project. Projects with no tasks are absent from
+  // the result set, so callers must fall back to 0.
+  const projectIds = activeProjectList.map((project) => project.id);
 
-  const projectCounts =
-    projectCountQueries.length > 0
-      ? await db.batch(projectCountQueries as [(typeof projectCountQueries)[number]])
+  const projectStatRows =
+    projectIds.length > 0
+      ? await db
+          .select({
+            projectId: tasks.projectId,
+            taskCount: count(),
+            doneCount: count(sql`case when ${tasks.status} = 'done' then 1 end`),
+          })
+          .from(tasks)
+          .where(and(eq(tasks.userId, userId), inArray(tasks.projectId, projectIds)))
+          .groupBy(tasks.projectId)
       : [];
 
-  const activeProjects = activeProjectList.map((project, i) => ({
+  const projectStatsById = new Map(projectStatRows.map((row) => [row.projectId, row]));
+
+  const activeProjects = activeProjectList.map((project) => ({
     id: project.id,
     name: project.name,
     color: project.color,
-    taskCount: projectCounts[i * 2][0].value,
-    doneCount: projectCounts[i * 2 + 1][0].value,
+    taskCount: projectStatsById.get(project.id)?.taskCount ?? 0,
+    doneCount: projectStatsById.get(project.id)?.doneCount ?? 0,
   }));
 
   return {
